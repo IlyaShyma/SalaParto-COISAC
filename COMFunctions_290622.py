@@ -1,0 +1,148 @@
+from matplotlib.pyplot import box
+from main import *
+import logging
+from logging.handlers import RotatingFileHandler
+
+
+
+class COMClass(QThread):
+
+    def __init__(self, comUI, self2):
+        super().__init__()
+        self.ui = self2.ui
+        self.self = self2
+        self.self.master = 0
+
+    def run(self):
+        self.self.calibAndImp = False
+        self.self.debugMode = False
+        self.self.curveLoaded = False
+        self.self.feedActive = False
+        self.self.curveOnCom = False
+
+        logFormatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+        logFile = "log/app_log.log"
+        my_handler = RotatingFileHandler(logFile, mode='a', maxBytes=5*1024*1024, 
+                                 backupCount=5, encoding=None, delay=0)
+        my_handler.setFormatter(logFormatter)
+        my_handler.setLevel(logging.INFO)
+        self.logger = logging.getLogger('root')
+        self.logger.setLevel(logging.INFO)
+
+        self.logger.addHandler(my_handler)
+
+        # logging.basicConfig(filename="log/log-{}.log".format(QDateTime.currentDateTime().toString()),format='%(asctime)s %(message)s',filemode='a')
+        # self.logger = modbus_tk.utils.create_logger()
+
+        self.logger.info(f"Start app")
+        while True:
+            comItem = self.self.dbConf.get(doc_id = 1)
+            if self.self.master == 0:
+                try:
+                    self.logger.info("CONNESSIONE MODBUS IN CORSO...")
+                    self.self.master = modbus_rtu.RtuMaster(serial.Serial(comItem.get('comPort'), baudrate = comItem.get('comBaud'), bytesize = 8, parity='N', stopbits=1))
+                    self.self.master.set_verbose(False)
+                    self.self.master.set_timeout(0.2)
+                    self.ui.chkHallCom.setChecked(True)
+                    self.ui.chkHallCom.setEnabled(False)
+                    t.sleep(1)
+                except:
+                    self.logger.error("CONNESSIONE NON RIUSCITA.")
+                    break
+            else:
+                if self.self.calibAndImp == False:
+                    self.logger.info("RICHIESTA CALIBRAZIONE...")
+                    COMClass.setTime(self)
+                    self.self.calibAndImp = True
+                    self.logger.info("CALIBRAZIONE RIUSCITA.")
+                elif self.self.debugMode == False:
+                    self.logger.info("MODALITA' DEBUG ATTIVATA...")
+                    self.self.debugMode = True
+                    self.logger.info("MODALITA' DEBUG COMPLETATA")
+                elif self.self.curveOnCom == False:
+                    self.logger.info("CARICAMENTO CURVA IN CORSO...")
+                    COMClass.sendCurveOnCom(self)
+                    self.self.curveOnCom = True
+                    self.logger.info("CARICAMENTO CURVA TERMINATA")
+                if self.self.feedActive != self.self.activeFeed:
+                    COMClass.startStopFeed(self)
+                else:
+                    seconds = int(QTime.currentTime().toString("s"))
+                    if (seconds % 59) == 0: # ogni minuto
+                        self.logger.info("LETTURA NORMALE IN CORSO...")
+                        COMClass.readNowFeed(self)
+                        COMClass.startStopFeed(self)
+                        # COMClass.setTime(self)
+            t.sleep(1)
+
+    def startStopFeed(self):
+        self.self.feedActive = self.self.activeFeed
+        if self.self.feedActive:
+            self.self.master.execute(0, cst.WRITE_SINGLE_COIL, 0, output_value=True)
+            self.logger.debug("PASTO ATTIVO")
+        else:
+            self.self.master.execute(0, cst.WRITE_SINGLE_COIL, 0, output_value=False)
+            self.logger.debug("PASTO FERMO")
+        
+        
+        
+    def readNowFeed(self):
+            for item in self.self.dbHall:
+                boxPos = self.self.dbBox.get(self.self.query.boxName == item.get('boxName'))
+                try:
+                    boxCom = int(boxPos.get('comPos'))
+                    if boxCom > 0:
+                    # if boxCom in [30, 40]:
+                        (tHi, tLo, secToRun, secTrig, secDone, numReq, waterPerc, weightTarg, readNowFeedKG, calVal, hall, cage, boot, sw) = self.self.master.execute(boxCom, cst.READ_INPUT_REGISTERS,0,14)
+
+                        # self.logger.info(f"Old values:{self.self.dbHall.get(self.self.query.boxName == item.get('boxName'))}")
+
+                        self.logger.info(f"id:{boxCom}, name:{item.get('boxName')}, tHi:{tHi}, tLo:{tLo}, secToRun:{secToRun}, secTrig:{secTrig}, secDone:{secDone}, numReq:{numReq}, waterPerc:{waterPerc}, weightTarg:{weightTarg}, readNowFeedKG:{readNowFeedKG}, calVal:{calVal}, hall:{hall}, cage:{cage}, boot:{boot}, sw:{sw}")
+                        if QDateTime.currentSecsSinceEpoch() - ((tHi << 16) | tLo) > (5 * 60):  #differenza di orario > 5 minuti
+                            sec_done = self.self.dbHall.get(self.self.query.boxName == item.get('boxName'))['readNowFeedSec']
+                            weight_done = self.self.dbHall.get(self.self.query.boxName == item.get('boxName'))['readNowFeedKG']
+                            self.logger.info(f"id:{boxCom}, name:{item.get('boxName')}, Sincronizzo orologio e impostato secondi erogati: {sec_done} e kg: {weight_done}")
+                            self.self.master.execute(boxCom, cst.WRITE_SINGLE_REGISTER, 0, output_value=((QDateTime.currentSecsSinceEpoch() >> 16) & 0xFFFF))
+                            t.sleep(0.2)
+                            self.self.master.execute(boxCom, cst.WRITE_SINGLE_REGISTER, 1, output_value=((QDateTime.currentSecsSinceEpoch() & 0xFFFF)))
+                            t.sleep(1)
+                            self.self.master.execute(boxCom, cst.WRITE_SINGLE_REGISTER, 4, output_value=sec_done)
+                            t.sleep(0.2)
+                            self.self.master.execute(boxCom, cst.WRITE_SINGLE_REGISTER, 8, output_value=weight_done)
+                            t.sleep(0.2)
+                            (tHi, tLo, secToRun, secTrig, secDone, numReq, waterPerc, weightTarg, readNowFeedKG, calVal, hall, cage, boot, sw) = self.self.master.execute(boxCom, cst.READ_INPUT_REGISTERS,0,14)
+                            self.logger.info(f"updated id:{boxCom}, name:{item.get('boxName')}, tHi:{tHi}, tLo:{tLo}, secToRun:{secToRun}, secTrig:{secTrig}, secDone:{secDone}, numReq:{numReq}, waterPerc:{waterPerc}, weightTarg:{weightTarg}, readNowFeedKG:{readNowFeedKG}, calVal:{calVal}, hall:{hall}, cage:{cage}, boot:{boot}, sw:{sw}")
+                        else:
+                            self.self.dbHall.upsert({'readNowFeedKG':readNowFeedKG}, self.self.query.boxName == item.get('boxName'))
+                            self.self.dbHall.upsert({'readNowFeedSec':secDone}, self.self.query.boxName == item.get('boxName'))
+
+                        # readNowFeedKG = self.self.master.execute(boxCom, cst.READ_INPUT_REGISTERS,8,1)
+                        # self.logger.info(f"id:{boxCom} NowFeedKG:{readNowFeedKG}")
+                        # self.self.dbHall.upsert({'readNowFeedKG':readNowFeedKG}, self.self.query.boxName == item.get('boxName'))
+                        t.sleep(0.05)
+                        for i in range(self.ui.tblHall.rowCount()):
+                            if self.ui.tblHall.item(i,0).text() == item.get('boxName'):
+                                self.ui.tblHall.setItem(i,7,QTableWidgetItem(str(readNowFeedKG)))
+                except:
+                    pass
+
+    def sendCurveOnCom(self):
+        for item in self.self.dbHall:
+            boxPos = self.self.dbBox.get(self.self.query.boxName == item.get('boxName'))
+            try:
+                boxCom = int(boxPos.get('comPos'))
+                # if boxCom in [30, 40]:
+                self.self.master.execute(boxCom, cst.WRITE_SINGLE_REGISTER, 7, output_value=int(item.get('curKGToday')))
+                self.logger.info(f"ID: {boxCom} ONLINE")
+            except:
+                if boxPos:
+                    boxCom = int(boxPos.get('comPos'))
+                    self.logger.info(f"ID: {boxCom} offline")
+                # pass
+                # print("NON LETTO")
+
+    def setTime(self):
+        self.self.master.execute(0, cst.WRITE_SINGLE_REGISTER, 0, output_value=((QDateTime.currentSecsSinceEpoch() >> 16) & 0xFFFF))
+        t.sleep(0.2)
+        self.self.master.execute(0, cst.WRITE_SINGLE_REGISTER, 1, output_value=((QDateTime.currentSecsSinceEpoch() & 0xFFFF)))
+        self.logger.info("ORA AGGIORNATA BROADCAST")

@@ -1,0 +1,26 @@
+<RCC>
+  <qresource prefix="resources">
+    <file>resources/logo/GT.png</file>
+  </qresource>
+  <qresource prefix="addons">
+    <file>resources/addons/right.png</file>
+    <file>resources/addons/left.png</file>
+  </qresource>
+  <qresource prefix="menu">
+    <file>resources/menu/icon_close.png</file>
+    <file>resources/menu/icon_maximize.png</file>
+    <file>resources/menu/icon_menu.png</file>
+    <file>resources/menu/icon_minimize.png</file>
+    <file>resources/menu/icon_restore.png</file>
+  </qresource>
+  <qresource prefix="leftMenu">
+    <file>resources/leftMenu/cil-home.png</file>
+    <file>resources/leftMenu/icon_menu.png</file>
+    <file>resources/leftMenu/cil-data.png</file>
+    <file>resources/leftMenu/cil-briefcase.png</file>
+    <file>resources/leftMenu/cil-arrow-right.png</file>
+    <file>resources/leftMenu/cil-medical-cross.png</file>
+    <file>resources/leftMenu/cil-alarm.png</file>
+    <file>resources/leftMenu/cil-link.png</file>
+  </qresource>
+</RCC>
