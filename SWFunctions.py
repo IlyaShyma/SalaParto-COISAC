@@ -1,3 +1,5 @@
+from PySide6.QtCore import QTime
+
 from main import *
 from FDFunctions import *
 

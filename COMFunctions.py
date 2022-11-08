@@ -35,7 +35,7 @@ class COMClass(QThread):
         self.reset = False
 
         logFormatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
-        logFile = "log/app_log.log"
+        logFile = "log/app_logg.log"
         my_handler = RotatingFileHandler(logFile, mode='a', maxBytes=5*1024*1024, 
                                  backupCount=5, encoding=None, delay=0)
         my_handler.setFormatter(logFormatter)
@@ -84,6 +84,12 @@ class COMClass(QThread):
                     now = QTime.currentTime() 
                     seconds = int(now.toString("s"))
                     if now.hour() == 0 and now.minute() == 2 and not self.reset:
+
+                        self.logger.info("daily report start")
+                        self.daily_report("reports/myFile.csv")
+                        self.logger.info("daily report end")
+
+
                         self.logger.info("RESET GIORNATA IN CORSO...")
                         COMClass.resetFeed(self)
                     if (seconds % 59) == 0: # ogni minuto
@@ -226,5 +232,38 @@ class COMClass(QThread):
         self.body = f"Lista ID offline {self.offline}"
         self.logger.info(self.body)
         if len(self.offline) > self.max_offline:
-            self.sendmail()        
+            self.sendmail()
+
+    def daily_report(self, file_relative_path):
+        # file_name = "reports/myFile.csv"
+
+        with open(file_relative_path, "a", newline="\n") as file:
+            field_names = ["id", "boxName", "sowName", "weightTarg", "readNowFeedKG", "secDone", "date"]
+            writer = csv.DictWriter(file, field_names)
+
+            if os.stat(file_relative_path).st_size == 0:
+                writer.writeheader()
+
+            data = QDate.currentDate().addDays(-1).toString("dd/MM/yyyy")
+
+            for row in self.self.dbHall:
+                boxPos = self.self.dbBox.get(self.self.query.boxName == row.get('boxName'))
+                try:
+                    boxCom = int(boxPos.get('comPos'))
+
+                    if boxCom > 0:
+                        (tHi, tLo, secToRun, secTrig, secDone, numReq, waterPerc, weightTarg, readNowFeedKG, calVal,
+                         hall, cage, boot, sw) = self.self.master.execute(boxCom, cst.READ_INPUT_REGISTERS, 0, 14)
+
+                        writer.writerow({"id": str(boxCom),
+                                         "boxName": row.get("boxName"),
+                                         "sowName": row.get("sowName"),
+                                         "weightTarg": str(weightTarg),
+                                         "readNowFeedKG": str(readNowFeedKG),
+                                         "secDone": str(secDone),
+                                         "date": data})
+                except Exception as e:
+                    pass
+
+
 
