@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1400</width>
-    <height>659</height>
+    <width>1230</width>
+    <height>757</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -715,7 +715,7 @@ background-color: rgb(242,243,248);
                 <string notr="true"/>
                </property>
                <property name="currentIndex">
-                <number>8</number>
+                <number>1</number>
                </property>
                <widget class="QWidget" name="pgHome">
                 <property name="styleSheet">
@@ -1030,7 +1030,50 @@ background-color: rgb(242,243,248);
                       </column>
                       <column>
                        <property name="text">
-                        <string>% Razione</string>
+                        <string>Suinetti</string>
+                       </property>
+                       <property name="textAlignment">
+                        <set>AlignLeading|AlignVCenter</set>
+                       </property>
+                      </column>
+                      <column>
+                       <property name="text">
+                        <string>%oggi</string>
+                       </property>
+                       <property name="textAlignment">
+                        <set>AlignLeading|AlignVCenter</set>
+                       </property>
+                      </column>
+                      <column>
+                       <property name="text">
+                        <string>%ieri</string>
+                       </property>
+                       <property name="textAlignment">
+                        <set>AlignLeading|AlignVCenter</set>
+                       </property>
+                      </column>
+                      <column>
+                       <property name="text">
+                        <string>% altro ieri</string>
+                       </property>
+                       <property name="textAlignment">
+                        <set>AlignLeading|AlignVCenter</set>
+                       </property>
+                      </column>
+                      <column>
+                       <property name="text">
+                        <string>Tot. consumato</string>
+                       </property>
+                       <property name="textAlignment">
+                        <set>AlignLeading|AlignVCenter</set>
+                       </property>
+                      </column>
+                      <column>
+                       <property name="text">
+                        <string>% sul teorico</string>
+                       </property>
+                       <property name="textAlignment">
+                        <set>AlignLeading|AlignVCenter</set>
                        </property>
                       </column>
                       <item row="0" column="0">
@@ -2523,6 +2566,7 @@ font-family: &quot;Segoe UI&quot;;</string>
                            </property>
                            <property name="font">
                             <font>
+                             <family>Segoe UI</family>
                              <pointsize>15</pointsize>
                             </font>
                            </property>
@@ -5014,9 +5058,9 @@ color: white;
                        <property name="geometry">
                         <rect>
                          <x>0</x>
-                         <y>-332</y>
-                         <width>1273</width>
-                         <height>803</height>
+                         <y>0</y>
+                         <width>592</width>
+                         <height>780</height>
                         </rect>
                        </property>
                        <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -5586,7 +5630,7 @@ color: white;
   </widget>
  </widget>
  <resources>
-  <include location="../../../SalaPartoCarmoOstianoRichieste/resources.qrc"/>
+  <include location="resources.qrc"/>
  </resources>
  <connections/>
 </ui>

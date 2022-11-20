@@ -25,6 +25,7 @@ import numpy as np
 from UIFunctions import *
 from SWFunctions import *
 from COMFunctions import *
+from TRFunctions import *
 # from COMFunctions import *
 
 
@@ -40,6 +41,7 @@ class MainWindow(QMainWindow):
         self.ui.setupUi(self)
         self.show()
         comUI = self.ui
+
         # LOAD INITIAL FUNCTIONS
         plm.set_locale('it')
         UIFunctions.defineUI(self)
@@ -72,6 +74,7 @@ class MainWindow(QMainWindow):
         self.com = COMClass(comUI, self)
 
         # LOAD BUTTONS AND PAGES
+        self.ui.comLanguage.currentTextChanged.connect(lambda: TRFunctions.updLanguage(self))
         self.ui.btnHall.pressed.connect(lambda: (self.ui.stackedWidget.setCurrentIndex(1), SWFunctions.loadHall(self)))
         self.ui.btnCurve.pressed.connect(lambda: self.ui.stackedWidget.setCurrentIndex(2))
         self.ui.btnTime.pressed.connect(lambda: self.ui.stackedWidget.setCurrentIndex(3))
@@ -89,6 +92,10 @@ class MainWindow(QMainWindow):
         self.ui.btnClose.pressed.connect(lambda: SWFunctions.closeAll(self))
         self.ui.btnHallRem.pressed.connect(lambda: SWFunctions.removeHall(self))
         self.ui.btnHallLoadCur.pressed.connect(lambda: self.com.start())
+
+        self.ui.tblHall.horizontalHeader().sectionClicked.connect(lambda: SWFunctions.sort_table(self))
+
+
         # PAGE CURVE FUNCTIONS
         self.ui.spiCurve.valueChanged.connect(lambda: SWFunctions.loadCurve(self))
         self.ui.btnCurveSave.pressed.connect(lambda: SWFunctions.saveCurve(self))

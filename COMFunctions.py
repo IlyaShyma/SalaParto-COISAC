@@ -1,5 +1,11 @@
-from matplotlib.pyplot import box
+
+import csv
+import os
+
+
 from main import *
+
+
 import logging
 from logging.handlers import RotatingFileHandler
 from emailer import *
@@ -81,15 +87,12 @@ class COMClass(QThread):
                 if self.self.feedActive != self.self.activeFeed:
                     COMClass.startStopFeed(self)
                 else:
-                    now = QTime.currentTime() 
+                    now = QTime.currentTime()
                     seconds = int(now.toString("s"))
                     if now.hour() == 0 and now.minute() == 2 and not self.reset:
-
-                        self.logger.info("daily report start")
-                        self.daily_report("reports/myFile.csv")
-                        self.logger.info("daily report end")
-
-
+                        # self.logger.info("daily report start")
+                        # self.daily_report("reports/myFile.csv")
+                        # self.logger.info("daily report end")
                         self.logger.info("RESET GIORNATA IN CORSO...")
                         COMClass.resetFeed(self)
                     if (seconds % 59) == 0: # ogni minuto
@@ -108,7 +111,7 @@ class COMClass(QThread):
         self.self.dbHall.update({'readNowFeedKG':0})
         self.self.dbHall.update({'readNowFeedSec':0})
         self.reset = True
-		
+
 
     def startStopFeed(self):
         self.offline = []
@@ -131,9 +134,8 @@ class COMClass(QThread):
             self.body = f"Lista ID offline {self.offline}"
             self.logger.info(self.body)
             if len(self.offline) > self.max_offline:
-                self.sendmail()        
+                self.sendmail()
 
-        
     def readNowFeed(self):
         self.offline = []
         for item in self.self.dbHall:
@@ -147,6 +149,7 @@ class COMClass(QThread):
                     # self.logger.info(f"Old values:{self.self.dbHall.get(self.self.query.boxName == item.get('boxName'))}")
 
                     self.logger.info(f"id:{boxCom}, name:{item.get('boxName')}, tHi:{tHi}, tLo:{tLo}, secToRun:{secToRun}, secTrig:{secTrig}, secDone:{secDone}, numReq:{numReq}, waterPerc:{waterPerc}, weightTarg:{weightTarg}, readNowFeedKG:{readNowFeedKG}, calVal:{calVal}, hall:{hall}, cage:{cage}, boot:{boot}, sw:{sw}")
+
                     if (QDateTime.currentSecsSinceEpoch() - ((tHi << 16) | tLo)) > (5 * 60) or self.reset:  #differenza di orario > 5 minuti
                         sec_done = self.self.dbHall.get(self.self.query.boxName == item.get('boxName'))['readNowFeedSec']
                         weight_done = self.self.dbHall.get(self.self.query.boxName == item.get('boxName'))['readNowFeedKG']
@@ -174,6 +177,17 @@ class COMClass(QThread):
                     for i in range(self.ui.tblHall.rowCount()):
                         if self.ui.tblHall.item(i,0).text() == item.get('boxName'):
                             self.ui.tblHall.setItem(i,7,QTableWidgetItem(str(readNowFeedKG)))
+
+                            #calc perc
+                            perc = 0
+                            if float(item.get("curKGToday")) > 0:
+                                try:
+                                    perc = float(readNowFeedKG)/float(item.get("curKGToday"))*100
+                                except:
+                                    pass
+                            self.ui.tblHall.setItem(i, 9, QTableWidgetItem(str(perc)))
+                            #end
+
             except Exception as e:
                 if boxPos:
                     boxCom = int(boxPos.get('comPos'))
@@ -185,7 +199,7 @@ class COMClass(QThread):
         	self.reset = False
         self.logger.info(self.body)
         if len(self.offline) > self.max_offline:
-            self.sendmail()        
+            self.sendmail()
 
     def sendCurveOnCom(self):
         self.offline = []
@@ -264,6 +278,3 @@ class COMClass(QThread):
                                          "date": data})
                 except Exception as e:
                     pass
-
-
-

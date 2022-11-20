@@ -14,6 +14,7 @@
     <file>resources/menu/icon_restore.png</file>
   </qresource>
   <qresource prefix="leftMenu">
+    <file>resources/leftMenu/pig.png</file>
     <file>resources/leftMenu/cil-home.png</file>
     <file>resources/leftMenu/icon_menu.png</file>
     <file>resources/leftMenu/cil-data.png</file>
