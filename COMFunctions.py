@@ -41,7 +41,7 @@ class COMClass(QThread):
         self.reset = False
 
         logFormatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
-        logFile = "log/app_logg.log"
+        logFile = "log/app_log.log"
         my_handler = RotatingFileHandler(logFile, mode='a', maxBytes=5*1024*1024, 
                                  backupCount=5, encoding=None, delay=0)
         my_handler.setFormatter(logFormatter)
