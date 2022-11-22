@@ -9,9 +9,18 @@ class SWFunctions():
         self.ui.lblTimer.setText(QTime.currentTime().toString())
         FDFunctions.checkFeedTime(self)
         if self.ui.lblTimer.text() == "00:00:00":
-            SWFunctions.saveSowRecord(self)
             self.curveOnCom = False
 
+        if self.ui.lblTimer.text() == "00:05:00":
+            SWFunctions.loadHall(self)
+
+        if self.activeFeed:
+            sow_rec_save_time = self.dbTime.get(doc_id=self.activeFeed)
+            time_to_call_funct = QTime.fromString(sow_rec_save_time.get("to"), "HH:mm")
+            time_to_call_funct = time_to_call_funct.addSecs(-10)
+
+            if self.ui.lblTimer.text() == time_to_call_funct.toString("HH:mm:ss"):
+                SWFunctions.saveSowRecord(self)
 
     def loadDB(self):
         self.dbHall = TinyDB('DB/Hall.json', storage=CachingMiddleware(JSONStorage))
@@ -389,7 +398,8 @@ class SWFunctions():
             row_index += 1
 
     def saveSowRecord(self):
-        today = QDate.currentDate().addDays(-1).toString("dd/MM/yyyy")
+        # today = QDate.currentDate().addDays(-1).toString("dd/MM/yyyy")
+        today = QDate.currentDate().toString("dd/MM/yyyy")
         for item in self.dbHall:
             consumedKG = 0
             curKG = 0
@@ -400,9 +410,28 @@ class SWFunctions():
                 pass
 
             if item.get("sowName") is not None and item.get("entryDate") is not None:
-                self.dbSowRecord.insert(
-                    {'sowName': item.get("sowName"), 'entryDate': item.get("entryDate"), 'day_recorded': today,
-                     'consumedKG': str(consumedKG), 'curKG': str(curKG)})
+                if not self.dbSowRecord.contains((self.query.sowName == item.get("sowName")) & (self.query.entryDate == item.get("entryDate")) & (self.query.day_recorded == today)):
+                    self.dbSowRecord.insert(
+                        {'sowName': item.get("sowName"), 'entryDate': item.get("entryDate"), 'day_recorded': today,
+                         'consumedKG': str(consumedKG), 'curKG': str(curKG)})
+                else:
+                    readNowFeedKG = 0
+                    saved_readNowFeedKG = 0
+                    try:
+                        readNowFeedKG = int(item.get("readNowFeedKG"))/1000
+                    except Exception as e:
+                        pass
+
+                    try:
+                        record = self.dbSowRecord.get((self.query.sowName == item.get("sowName")) & (self.query.entryDate == item.get("entryDate")) & (self.query.day_recorded == today))
+                        saved_readNowFeedKG = float(record.get("consumedKG"))
+                    except:
+                        pass
+
+                    if readNowFeedKG > saved_readNowFeedKG:
+                        self.dbSowRecord.update({"consumedKG": str(readNowFeedKG)},(self.query.sowName == item.get("sowName")) & (self.query.entryDate == item.get("entryDate")) & (self.query.day_recorded == today))
+
+        SWFunctions.loadHall(self)
 
     def calcTotConsumed(self, hallData):
         record = self.dbSowRecord.search(

@@ -90,9 +90,6 @@ class COMClass(QThread):
                     now = QTime.currentTime()
                     seconds = int(now.toString("s"))
                     if now.hour() == 0 and now.minute() == 2 and not self.reset:
-                        # self.logger.info("daily report start")
-                        # self.daily_report("reports/myFile.csv")
-                        # self.logger.info("daily report end")
                         self.logger.info("RESET GIORNATA IN CORSO...")
                         COMClass.resetFeed(self)
                     if (seconds % 59) == 0: # ogni minuto
@@ -182,11 +179,10 @@ class COMClass(QThread):
                             perc = 0
                             if float(item.get("curKGToday")) > 0:
                                 try:
-                                    perc = float(readNowFeedKG)/float(item.get("curKGToday"))*100
+                                    perc = int(float(readNowFeedKG)/float(item.get("curKGToday"))*100)
                                 except:
                                     pass
                             self.ui.tblHall.setItem(i, 9, QTableWidgetItem(str(perc)))
-                            #end
 
             except Exception as e:
                 if boxPos:

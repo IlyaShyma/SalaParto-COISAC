@@ -23,5 +23,6 @@
     <file>resources/leftMenu/cil-medical-cross.png</file>
     <file>resources/leftMenu/cil-alarm.png</file>
     <file>resources/leftMenu/cil-link.png</file>
+    <file>resources/leftMenu/pig.png</file>
   </qresource>
 </RCC>
