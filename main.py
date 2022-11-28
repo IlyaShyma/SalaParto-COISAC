@@ -24,7 +24,7 @@ import numpy as np
 # FUNCTIONS IMPORT
 from UIFunctions import *
 from SWFunctions import *
-from COMFunctions import *
+from COMFunctionsSplitBus import *
 from TRFunctions import *
 # from COMFunctions import *
 
@@ -55,8 +55,12 @@ class MainWindow(QMainWindow):
         SWFunctions.loadBox(self)
         SWFunctions.loadAddSowInBox(self)
         SWFunctions.loadConf(self)
+
         # # TMFunctions.setCom(self)
         # # TMFunctions.showDateTime(self)
+
+        # UIFunctions.xuinia(self)
+
         SWFunctions.loadHall(self)
         UIFunctions.sowGraph(self)
         #COMFunctions.startCom(self)
@@ -82,18 +86,28 @@ class MainWindow(QMainWindow):
         self.ui.btnCom.pressed.connect(lambda: self.ui.stackedWidget.setCurrentIndex(5))
         self.ui.btnData.pressed.connect(lambda: self.ui.stackedWidget.setCurrentIndex(6))
         self.ui.btnHallAdd.pressed.connect(lambda: (self.ui.stackedWidget.setCurrentIndex(7), SWFunctions.boxSelected(self)))
-        self.ui.btnSettings.pressed.connect(lambda: self.ui.stackedWidget.setCurrentIndex(8))
+        self.ui.btnSettings.pressed.connect(lambda: self.ui.stackedWidget.setCurrentIndex(9))
         self.ui.btnMenu.pressed.connect(lambda: UIFunctions.animazioneMenu(self))
 
+        self.ui.btnPig.pressed.connect(lambda: self.ui.stackedWidget.setCurrentIndex(8))
 
         # PAGE HALL FUNCTIONS
         self.ui.spiHall.valueChanged.connect(lambda: SWFunctions.loadHall(self))
         self.ui.btnHallExp.pressed.connect(lambda: SWFunctions.exportXLSXHall(self))
         self.ui.btnClose.pressed.connect(lambda: SWFunctions.closeAll(self))
-        self.ui.btnHallRem.pressed.connect(lambda: SWFunctions.removeHall(self))
+        # self.ui.btnHallRem.pressed.connect(lambda: SWFunctions.removeHall(self))
+
+        self.ui.btnHallRem.pressed.connect(lambda: SWFunctions.save_bf_removeHall(self))
+
         self.ui.btnHallLoadCur.pressed.connect(lambda: self.com.start())
 
         self.ui.tblHall.horizontalHeader().sectionClicked.connect(lambda: SWFunctions.sort_table(self))
+        self.ui.tblHall.cellDoubleClicked.connect(lambda: SWFunctions.double_click_sow(self))
+
+        # PAGE PIG FUNCTIONS
+        self.ui.btnSearch.pressed.connect(lambda: SWFunctions.sow_search(self))
+        self.ui.cboxPigBox.currentIndexChanged.connect(lambda: SWFunctions.sow_table_cbox_changed(self))
+        # self.ui.tblSowRecord.pressed.connect(lambda: UIFunctions.draw_sow_history(self))
 
 
         # PAGE CURVE FUNCTIONS
@@ -140,7 +154,9 @@ class MainWindow(QMainWindow):
             self.ui.comAddSelBox.setCurrentIndex(nowPos-1)
         elif e.key() == 16777220 and self.ui.stackedWidget.currentIndex() == 7:
             SWFunctions.saveSowInBox(self)
-            
+        elif e.key() == 16777220 and self.ui.stackedWidget.currentIndex() == 8:
+            SWFunctions.sow_search(self)
+
 
 # SHOW WINDOW
 if __name__ == "__main__":

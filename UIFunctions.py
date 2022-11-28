@@ -1,3 +1,6 @@
+import matplotlib.pyplot as plt
+
+
 from main import *
 
 
@@ -100,6 +103,9 @@ class UIFunctions():
                  self.ui.tblCurve.setItem(i,1,QTableWidgetItem(str(i-14)))
 
     def sowGraph(self):
+        plt.cla()
+        plt.clf()
+
         gestazione = [None] * 15
         parto = [None] * 35
         curva = self.dbCurve.get(doc_id=self.ui.spiCurve.value())
@@ -179,3 +185,81 @@ class UIFunctions():
             self.fig.canvas.draw_idle()
         except:
             self.ui.lblCurveStatus.setText("CURVA NON VALIDA.")
+
+
+    def xuinia(self):
+
+        self.sow_history_figure = plt.figure("xui")
+        plt.plot([1, 2, 3, 4])
+        plt.show()
+        plotWidget = FigureCanvas(self.sow_history_figure)
+        layout = QVBoxLayout()
+        layout.addWidget(plotWidget)
+        self.ui.pigGraph.setLayout(layout)
+
+    def draw_sow_history(self):
+
+
+        self.history_figure = plt.figure("pjzda")
+        plt.plot([2, 2, 3, 4])
+        plt.show()
+        plotWidget = FigureCanvas(self.history_figure)
+        layout = QVBoxLayout()
+        layout.addWidget(plotWidget)
+        self.ui.pigGraph.setLayout(layout)
+
+
+        # item = 0
+        # xui = []
+        # try:
+        #     current_row = self.ui.tblSowRecord.currentRow()
+        #     current_column = self.ui.tblSowRecord.currentColumn()
+        #     name = self.ui.tblSowRecord.item(current_row, current_column)
+        #     entrata = self.ui.tblSowRecord.item(current_row, current_column + 1)
+        #
+        #     items = self.dbSowRecord.search(self.query.sowName == name.text())
+        #
+        #     for element in items:
+        #         for key, value in element.items():
+        #             if key == "consumedKG":
+        #                 xui.append(float(value))
+        # except Exception as e:
+        #     print(e)
+        # print(xui)
+        #
+        # layout = QVBoxLayout()
+        # for param in ['text.color', 'axes.labelcolor', 'xtick.color', 'ytick.color']:
+        #     plt.rcParams[param] = '0.9'
+        # for param in ['figure.facecolor', 'axes.facecolor', 'savefig.facecolor']:
+        #     plt.rcParams[param] = '#3f3c5b'
+        # colors = [
+        #     '#08F7FE',  # teal/cyan
+        #     '#FE53BB',  # pink
+        #     '#F5D300',  # yellow
+        #     '#00ff41',  # matrix green
+        # ]
+        # self.df = pd.DataFrame({'Gestazione': xui})
+        # plt.subplots_adjust(left=0, bottom=0, right=1, top=1, wspace=0, hspace=0)
+        # self.fig, self.ax = plt.subplots()
+        # self.df.plot(marker='o', color=colors,
+        #              ax=self.ax)  # Redraw the data with low alpha and slighty increased linewidth:
+        # n_shades = 10
+        # diff_linewidth = 1.05
+        # alpha_value = 0.3 / n_shades
+        # for n in range(1, n_shades + 1):
+        #     self.df.plot(marker='o', linewidth=2 + (diff_linewidth * n), alpha=alpha_value, legend=False, ax=self.ax,
+        #                  color=colors)  # Color the areas below the lines:
+        # for column, color in zip(self.df, colors):
+        #     self.ax.fill_between(x=self.df.index, y1=self.df[column].values, y2=[0] * len(self.df), color=color,
+        #                          alpha=0.1)
+        # self.ax.grid(color='#2d2b42')
+        # self.ax.set_xlim([self.ax.get_xlim()[0] - 0.2, self.ax.get_xlim()[1] + 0.2])
+        # plt.show()
+        # plt.subplots_adjust(top=0.9, bottom=0.1, right=0.95, left=0.05, hspace=1, wspace=0)
+        # plt.margins(0, 0)
+        # plt.box(False)
+        # plotWidget = FigureCanvas(self.fig)
+        # layout.addWidget(plotWidget)
+        # layout.setContentsMargins(0, 0, 0, 0)
+        #
+        # self.ui.pigGraph.setLayout(layout)

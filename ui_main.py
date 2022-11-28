@@ -28,7 +28,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1230, 757)
+        MainWindow.resize(1456, 728)
         self.stylesheet = QWidget(MainWindow)
         self.stylesheet.setObjectName(u"stylesheet")
         self.stylesheet.setStyleSheet(u"#fr1Top {\n"
@@ -95,10 +95,10 @@ class Ui_MainWindow(object):
 "background-color: #bd93f9;\n"
 "color: white;\n"
 "}")
-        self.verticalLayout = QVBoxLayout(self.stylesheet)
-        self.verticalLayout.setSpacing(0)
-        self.verticalLayout.setObjectName(u"verticalLayout")
-        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_16 = QHBoxLayout(self.stylesheet)
+        self.horizontalLayout_16.setSpacing(0)
+        self.horizontalLayout_16.setObjectName(u"horizontalLayout_16")
+        self.horizontalLayout_16.setContentsMargins(0, 0, 0, 0)
         self.frBg = QFrame(self.stylesheet)
         self.frBg.setObjectName(u"frBg")
         self.frBg.setFrameShape(QFrame.NoFrame)
@@ -2374,6 +2374,7 @@ class Ui_MainWindow(object):
         self.btnAddAdd.setObjectName(u"btnAddAdd")
         self.btnAddAdd.setMinimumSize(QSize(0, 70))
         self.btnAddAdd.setMaximumSize(QSize(16777215, 70))
+        self.btnAddAdd.setFont(font4)
 
         self.horizontalLayout_12.addWidget(self.btnAddAdd)
 
@@ -2394,6 +2395,172 @@ class Ui_MainWindow(object):
         self.verticalLayout_14.addWidget(self.menuAdd)
 
         self.stackedWidget.addWidget(self.pgAdd)
+        self.pgPig = QWidget()
+        self.pgPig.setObjectName(u"pgPig")
+        self.verticalLayout = QVBoxLayout(self.pgPig)
+        self.verticalLayout.setObjectName(u"verticalLayout")
+        self.frPig = QFrame(self.pgPig)
+        self.frPig.setObjectName(u"frPig")
+        self.frPig.setEnabled(True)
+        self.verticalLayout_20 = QVBoxLayout(self.frPig)
+        self.verticalLayout_20.setObjectName(u"verticalLayout_20")
+        self.cboxPigBox = QComboBox(self.frPig)
+        self.cboxPigBox.addItem("")
+        self.cboxPigBox.addItem("")
+        self.cboxPigBox.setObjectName(u"cboxPigBox")
+        self.cboxPigBox.setMinimumSize(QSize(0, 50))
+        self.cboxPigBox.setFont(font)
+
+        self.verticalLayout_20.addWidget(self.cboxPigBox)
+
+        self.frame_3 = QFrame(self.frPig)
+        self.frame_3.setObjectName(u"frame_3")
+        self.frame_3.setFrameShape(QFrame.NoFrame)
+        self.frame_3.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_17 = QHBoxLayout(self.frame_3)
+        self.horizontalLayout_17.setObjectName(u"horizontalLayout_17")
+        self.frPigLeft = QFrame(self.frame_3)
+        self.frPigLeft.setObjectName(u"frPigLeft")
+        self.frPigLeft.setMinimumSize(QSize(0, 0))
+        self.frPigLeft.setFrameShape(QFrame.NoFrame)
+        self.frPigLeft.setFrameShadow(QFrame.Raised)
+        self.gridLayout_19 = QGridLayout(self.frPigLeft)
+        self.gridLayout_19.setObjectName(u"gridLayout_19")
+        self.btnSearch = QPushButton(self.frPigLeft)
+        self.btnSearch.setObjectName(u"btnSearch")
+        sizePolicy3.setHeightForWidth(self.btnSearch.sizePolicy().hasHeightForWidth())
+        self.btnSearch.setSizePolicy(sizePolicy3)
+        self.btnSearch.setMinimumSize(QSize(100, 50))
+        palette = QPalette()
+        brush = QBrush(QColor(255, 255, 255, 255))
+        brush.setStyle(Qt.SolidPattern)
+        palette.setBrush(QPalette.Active, QPalette.WindowText, brush)
+        brush1 = QBrush(QColor(63, 60, 91, 255))
+        brush1.setStyle(Qt.SolidPattern)
+        palette.setBrush(QPalette.Active, QPalette.Button, brush1)
+        palette.setBrush(QPalette.Active, QPalette.Text, brush)
+        palette.setBrush(QPalette.Active, QPalette.ButtonText, brush)
+        palette.setBrush(QPalette.Active, QPalette.Base, brush1)
+        palette.setBrush(QPalette.Active, QPalette.Window, brush1)
+#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
+        palette.setBrush(QPalette.Active, QPalette.PlaceholderText, brush)
+#endif
+        palette.setBrush(QPalette.Inactive, QPalette.WindowText, brush)
+        palette.setBrush(QPalette.Inactive, QPalette.Button, brush1)
+        palette.setBrush(QPalette.Inactive, QPalette.Text, brush)
+        palette.setBrush(QPalette.Inactive, QPalette.ButtonText, brush)
+        palette.setBrush(QPalette.Inactive, QPalette.Base, brush1)
+        palette.setBrush(QPalette.Inactive, QPalette.Window, brush1)
+#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
+        palette.setBrush(QPalette.Inactive, QPalette.PlaceholderText, brush)
+#endif
+        palette.setBrush(QPalette.Disabled, QPalette.WindowText, brush)
+        palette.setBrush(QPalette.Disabled, QPalette.Button, brush1)
+        palette.setBrush(QPalette.Disabled, QPalette.Text, brush)
+        palette.setBrush(QPalette.Disabled, QPalette.ButtonText, brush)
+        palette.setBrush(QPalette.Disabled, QPalette.Base, brush1)
+        palette.setBrush(QPalette.Disabled, QPalette.Window, brush1)
+#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
+        palette.setBrush(QPalette.Disabled, QPalette.PlaceholderText, brush)
+#endif
+        self.btnSearch.setPalette(palette)
+        self.btnSearch.setFont(font)
+        self.btnSearch.setAutoFillBackground(False)
+        self.btnSearch.setStyleSheet(u"background-color: rgb(63, 60, 91); \n"
+"color: white; \n"
+"")
+
+        self.gridLayout_19.addWidget(self.btnSearch, 0, 1, 1, 1)
+
+        self.sowStatus = QLabel(self.frPigLeft)
+        self.sowStatus.setObjectName(u"sowStatus")
+        self.sowStatus.setStyleSheet(u"color: red; ")
+
+        self.gridLayout_19.addWidget(self.sowStatus, 2, 0, 1, 2)
+
+        self.searchPanel = QLineEdit(self.frPigLeft)
+        self.searchPanel.setObjectName(u"searchPanel")
+        self.searchPanel.setMinimumSize(QSize(0, 50))
+        font5 = QFont()
+        font5.setPointSize(18)
+        self.searchPanel.setFont(font5)
+        self.searchPanel.setStyleSheet(u"background-color: rgb(255,255,255);")
+
+        self.gridLayout_19.addWidget(self.searchPanel, 0, 0, 1, 1)
+
+        self.tblSowRecord = QTableWidget(self.frPigLeft)
+        if (self.tblSowRecord.columnCount() < 8):
+            self.tblSowRecord.setColumnCount(8)
+        __qtablewidgetitem58 = QTableWidgetItem()
+        __qtablewidgetitem58.setTextAlignment(Qt.AlignLeading|Qt.AlignVCenter);
+        self.tblSowRecord.setHorizontalHeaderItem(0, __qtablewidgetitem58)
+        __qtablewidgetitem59 = QTableWidgetItem()
+        __qtablewidgetitem59.setTextAlignment(Qt.AlignLeading|Qt.AlignVCenter);
+        self.tblSowRecord.setHorizontalHeaderItem(1, __qtablewidgetitem59)
+        __qtablewidgetitem60 = QTableWidgetItem()
+        __qtablewidgetitem60.setTextAlignment(Qt.AlignLeading|Qt.AlignVCenter);
+        self.tblSowRecord.setHorizontalHeaderItem(2, __qtablewidgetitem60)
+        __qtablewidgetitem61 = QTableWidgetItem()
+        __qtablewidgetitem61.setTextAlignment(Qt.AlignLeading|Qt.AlignVCenter);
+        self.tblSowRecord.setHorizontalHeaderItem(3, __qtablewidgetitem61)
+        __qtablewidgetitem62 = QTableWidgetItem()
+        __qtablewidgetitem62.setTextAlignment(Qt.AlignLeading|Qt.AlignVCenter);
+        self.tblSowRecord.setHorizontalHeaderItem(4, __qtablewidgetitem62)
+        __qtablewidgetitem63 = QTableWidgetItem()
+        __qtablewidgetitem63.setTextAlignment(Qt.AlignLeading|Qt.AlignVCenter);
+        self.tblSowRecord.setHorizontalHeaderItem(5, __qtablewidgetitem63)
+        __qtablewidgetitem64 = QTableWidgetItem()
+        __qtablewidgetitem64.setTextAlignment(Qt.AlignLeading|Qt.AlignVCenter);
+        self.tblSowRecord.setHorizontalHeaderItem(6, __qtablewidgetitem64)
+        __qtablewidgetitem65 = QTableWidgetItem()
+        __qtablewidgetitem65.setTextAlignment(Qt.AlignLeading|Qt.AlignVCenter);
+        self.tblSowRecord.setHorizontalHeaderItem(7, __qtablewidgetitem65)
+        self.tblSowRecord.setObjectName(u"tblSowRecord")
+        palette1 = QPalette()
+        brush2 = QBrush(QColor(242, 243, 248, 255))
+        brush2.setStyle(Qt.SolidPattern)
+        palette1.setBrush(QPalette.Active, QPalette.Button, brush2)
+        palette1.setBrush(QPalette.Active, QPalette.Base, brush2)
+        palette1.setBrush(QPalette.Active, QPalette.Window, brush2)
+        palette1.setBrush(QPalette.Inactive, QPalette.Button, brush2)
+        palette1.setBrush(QPalette.Inactive, QPalette.Base, brush2)
+        palette1.setBrush(QPalette.Inactive, QPalette.Window, brush2)
+        palette1.setBrush(QPalette.Disabled, QPalette.Button, brush2)
+        palette1.setBrush(QPalette.Disabled, QPalette.Base, brush2)
+        palette1.setBrush(QPalette.Disabled, QPalette.Window, brush2)
+        self.tblSowRecord.setPalette(palette1)
+
+        self.gridLayout_19.addWidget(self.tblSowRecord, 1, 0, 1, 3)
+
+
+        self.horizontalLayout_17.addWidget(self.frPigLeft)
+
+        self.frPigRight = QFrame(self.frame_3)
+        self.frPigRight.setObjectName(u"frPigRight")
+        self.frPigRight.setFrameShape(QFrame.NoFrame)
+        self.frPigRight.setFrameShadow(QFrame.Raised)
+        self.verticalLayout_21 = QVBoxLayout(self.frPigRight)
+        self.verticalLayout_21.setObjectName(u"verticalLayout_21")
+        self.pigGraph = QWidget(self.frPigRight)
+        self.pigGraph.setObjectName(u"pigGraph")
+        sizePolicy6 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        sizePolicy6.setHorizontalStretch(0)
+        sizePolicy6.setVerticalStretch(0)
+        sizePolicy6.setHeightForWidth(self.pigGraph.sizePolicy().hasHeightForWidth())
+        self.pigGraph.setSizePolicy(sizePolicy6)
+
+        self.verticalLayout_21.addWidget(self.pigGraph)
+
+
+        self.horizontalLayout_17.addWidget(self.frPigRight)
+
+
+        self.verticalLayout_20.addWidget(self.frame_3)
+
+
+        self.verticalLayout.addWidget(self.frPig)
+
+        self.stackedWidget.addWidget(self.pgPig)
         self.pgSettings = QWidget()
         self.pgSettings.setObjectName(u"pgSettings")
         self.verticalLayout_16 = QVBoxLayout(self.pgSettings)
@@ -2423,7 +2590,7 @@ class Ui_MainWindow(object):
         self.scrollAreaSettingsMain.setWidgetResizable(True)
         self.scrollAreaSettings = QWidget()
         self.scrollAreaSettings.setObjectName(u"scrollAreaSettings")
-        self.scrollAreaSettings.setGeometry(QRect(0, 0, 591, 780))
+        self.scrollAreaSettings.setGeometry(QRect(0, 0, 1322, 780))
         self.verticalLayout_18 = QVBoxLayout(self.scrollAreaSettings)
         self.verticalLayout_18.setObjectName(u"verticalLayout_18")
         self.frSettings3 = QFrame(self.scrollAreaSettings)
@@ -2720,13 +2887,13 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.addWidget(self.fr2Content)
 
 
-        self.verticalLayout.addWidget(self.frBg)
+        self.horizontalLayout_16.addWidget(self.frBg)
 
         MainWindow.setCentralWidget(self.stylesheet)
 
         self.retranslateUi(MainWindow)
 
-        self.stackedWidget.setCurrentIndex(1)
+        self.stackedWidget.setCurrentIndex(8)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
@@ -2997,6 +3164,26 @@ class Ui_MainWindow(object):
         self.btnAddAdd.setText(QCoreApplication.translate("MainWindow", u"INSERISCI DATI IN GABBIA", None))
         self.btnAddRes.setText(QCoreApplication.translate("MainWindow", u"INSERISCI PARTO", None))
         self.btnAddMen.setText(QCoreApplication.translate("MainWindow", u"MENU PRINCIPALE", None))
+        self.cboxPigBox.setItemText(0, QCoreApplication.translate("MainWindow", u"Storico scrofa", None))
+        self.cboxPigBox.setItemText(1, QCoreApplication.translate("MainWindow", u"Storico gabbia", None))
+
+        self.btnSearch.setText(QCoreApplication.translate("MainWindow", u"Cerca", None))
+        ___qtablewidgetitem51 = self.tblSowRecord.horizontalHeaderItem(0)
+        ___qtablewidgetitem51.setText(QCoreApplication.translate("MainWindow", u"gabbia", None));
+        ___qtablewidgetitem52 = self.tblSowRecord.horizontalHeaderItem(1)
+        ___qtablewidgetitem52.setText(QCoreApplication.translate("MainWindow", u"entrata", None));
+        ___qtablewidgetitem53 = self.tblSowRecord.horizontalHeaderItem(2)
+        ___qtablewidgetitem53.setText(QCoreApplication.translate("MainWindow", u"data parto", None));
+        ___qtablewidgetitem54 = self.tblSowRecord.horizontalHeaderItem(3)
+        ___qtablewidgetitem54.setText(QCoreApplication.translate("MainWindow", u"uscita", None));
+        ___qtablewidgetitem55 = self.tblSowRecord.horizontalHeaderItem(4)
+        ___qtablewidgetitem55.setText(QCoreApplication.translate("MainWindow", u"suinetti nati", None));
+        ___qtablewidgetitem56 = self.tblSowRecord.horizontalHeaderItem(5)
+        ___qtablewidgetitem56.setText(QCoreApplication.translate("MainWindow", u"suinetti svezzati", None));
+        ___qtablewidgetitem57 = self.tblSowRecord.horizontalHeaderItem(6)
+        ___qtablewidgetitem57.setText(QCoreApplication.translate("MainWindow", u"tot consumato", None));
+        ___qtablewidgetitem58 = self.tblSowRecord.horizontalHeaderItem(7)
+        ___qtablewidgetitem58.setText(QCoreApplication.translate("MainWindow", u"% sul teorico", None));
         self.lblSettings.setText(QCoreApplication.translate("MainWindow", u"Impostazione Software", None))
         self.lblSetMaxHall_3.setText(QCoreApplication.translate("MainWindow", u"A Box", None))
         self.spiSetModCur.setSuffix("")

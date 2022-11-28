@@ -77,6 +77,7 @@ class COMClass(QThread):
                     COMClass.sendCurveOnCom(self)
                     self.self.curveOnCom = True
                     self.logger.info("CARICAMENTO CURVA TERMINATA")
+
                 if self.self.feedActive != self.self.activeFeed:
                     COMClass.startStopFeed(self)
                 else:

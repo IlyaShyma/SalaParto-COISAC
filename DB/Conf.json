@@ -1,1 +1,1 @@
-{"_default": {"1": {"comPort": "/dev/ttyS0", "comBaud": 9600, "comCalib": 110, "comImp": 30}}}
+{"_default": {"1": {"comPort": "/dev/ttyS0", "comBaud": 9600, "comCalib": 110, "comImp": 30} , "2": {"comPort": "/dev/ttyS1", "comBaud": 9600, "comCalib": 110, "comImp": 30}}}

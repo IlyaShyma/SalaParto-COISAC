@@ -2,7 +2,6 @@ from main import *
 from FDFunctions import *
 
 
-
 class SWFunctions():
 
     def updateTime(self):
@@ -30,42 +29,39 @@ class SWFunctions():
         self.dbBox = TinyDB('DB/Box.json', storage=CachingMiddleware(JSONStorage))
         self.dbConf = TinyDB('DB/Conf.json', storage=CachingMiddleware(JSONStorage))
 
-
         self.dbSowRecord = TinyDB("DB/SowRecord.json")
-
+        self.dbSowHistory = TinyDB("DB/SowHistory.json")
 
         self.query = Query()
-
 
     def saveSow(self):
         sowToInsert = self.ui.txtDataSow.text()
         if self.dbSow.search(self.query.sowName == sowToInsert):
-            self.ui.lblDataStatus.setText("IMPOSSIBILE AGGIUNGERE. "+sowToInsert+" GIA' ESISTENTE.")
+            self.ui.lblDataStatus.setText("IMPOSSIBILE AGGIUNGERE. " + sowToInsert + " GIA' ESISTENTE.")
         else:
-            self.dbSow.insert({'sowName':sowToInsert})
+            self.dbSow.insert({'sowName': sowToInsert})
             SWFunctions.loadSow(self)
 
     def loadSow(self):
         self.ui.tblSow.setRowCount(len(self.dbSow))
         i = 0
         for item in self.dbSow:
-            self.ui.tblSow.setItem(i,0,QTableWidgetItem(item.get('sowName')))
+            self.ui.tblSow.setItem(i, 0, QTableWidgetItem(item.get('sowName')))
             i += 1
         self.ui.txtDataTotSow.setText(str(len(self.dbSow)))
 
     def removeBox(self):
         boxToRemove = self.ui.tblBox.item(self.ui.tblBox.currentRow(), 0).text()
         if self.dbHall.search(self.query.boxName == boxToRemove):
-            self.ui.lblDataStatus.setText("IMPOSSIBILE RIMUOVERE. "+boxToRemove+" IN UTILIZZO.")
+            self.ui.lblDataStatus.setText("IMPOSSIBILE RIMUOVERE. " + boxToRemove + " IN UTILIZZO.")
         else:
             self.dbBox.remove(self.query.boxName == boxToRemove)
             SWFunctions.loadBox(self)
 
-
     def removeSow(self):
         sowToRemove = self.ui.tblSow.item(self.ui.tblSow.currentRow(), 0).text()
         if self.dbHall.search(self.query.sowName == sowToRemove):
-            self.ui.lblDataStatus.setText("IMPOSSIBILE RIMUOVERE. "+sowToRemove+" IN UTILIZZO.")
+            self.ui.lblDataStatus.setText("IMPOSSIBILE RIMUOVERE. " + sowToRemove + " IN UTILIZZO.")
         else:
             self.dbSow.remove(self.query.sowName == sowToRemove)
             SWFunctions.loadSow(self)
@@ -74,9 +70,9 @@ class SWFunctions():
         hallToFill = self.ui.spiDataHallAdd.value()
         boxInHall = self.ui.spiDataBoxAdd.value()
         for i in range(boxInHall):
-            boxName = "S"+str(hallToFill)+"B"+str(i+1)
+            boxName = "S" + str(hallToFill) + "B" + str(i + 1)
             hallPos = hallToFill
-            boxPos = i+1
+            boxPos = i + 1
             comPos = -1
             if self.dbBox.search(self.query.boxName == boxName):
                 pass
@@ -219,15 +215,15 @@ class SWFunctions():
                     pigRealBirth = hallData.get('pigRealBirth')
                     pigWeight = hallData.get('pigWeight')
                     try:
-                        curKG = str(int(float(curValue)*1000))
+                        curKG = str(int(float(curValue) * 1000))
                     except:
                         curKG = 0
-                    self.ui.tblHall.setItem(i,1,QTableWidgetItem(sowName))
-                    self.ui.tblHall.setItem(i,2,QTableWidgetItem(sowSit))
-                    self.ui.tblHall.setItem(i,3,QTableWidgetItem(nrCurve))
-                    self.ui.tblHall.setItem(i,4,QTableWidgetItem(str(curDay)))
-                    self.ui.tblHall.setItem(i,5,QTableWidgetItem(curKG))
-                    self.dbHall.upsert({'curKGToday':curKG},self.query.boxName == boxName)
+                    self.ui.tblHall.setItem(i, 1, QTableWidgetItem(sowName))
+                    self.ui.tblHall.setItem(i, 2, QTableWidgetItem(sowSit))
+                    self.ui.tblHall.setItem(i, 3, QTableWidgetItem(nrCurve))
+                    self.ui.tblHall.setItem(i, 4, QTableWidgetItem(str(curDay)))
+                    self.ui.tblHall.setItem(i, 5, QTableWidgetItem(curKG))
+                    self.dbHall.upsert({'curKGToday': curKG}, self.query.boxName == boxName)
 
                     num_pasti = self.dbTime.count(self.query.active == "SI")
                     if num_pasti == 0:
@@ -352,6 +348,148 @@ class SWFunctions():
             self.ui.spiSetComImp.setValue(conf.get('comImp'))
             self.ui.spiSetComCal.setValue(conf.get('comCalib'))
 
+    def save_bf_removeHall(self):
+        hall_to_remove = None
+        try:
+            hall_to_remove = self.ui.tblHall.item(self.ui.tblHall.currentRow(), 1).text()
+            hall_to_remove = self.dbHall.get(self.query.sowName == hall_to_remove)
+        except:
+            print("NON HAI SELEZIONATO LA SCROFA DA RIMUOVERE")
+
+        if hall_to_remove is not None:
+            dlg = QMessageBox(self)
+            dlg.setWindowTitle("I have a question!")
+            dlg.setText("Vuoi salvare i dati della scrofa?")
+            dlg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+            dlg.setIcon(QMessageBox.Question)
+            button = dlg.exec_()
+
+            if button == QMessageBox.Yes:
+                text, ok = QInputDialog().getText(self, "Data di uscita in questo formato gg/mm/aaaa",
+                                                  "Data di uscita:", QLineEdit.Normal,
+                                                  QDate.currentDate().toString("dd/MM/yyyy"))
+                if ok and text:
+                    exit_date = QDate.fromString(text, "dd/MM/yyyy")
+                    if exit_date.isValid():
+                        if SWFunctions.archive_sow(self, exit_date, hall_to_remove):
+                            SWFunctions.removeHall(self)
+                    else:
+                        print("la data non è corretta")
+            elif button == QMessageBox.No:
+                print("No!")
+            else:
+                print("indietro")
+
+    def archive_sow(self, exit_date, hall_info):
+        if hall_info.get("sowName") is not None and hall_info.get("boxName") is not None and \
+                hall_info.get("entryDate") is not None:
+
+            tot_consumed, tot_curKG = SWFunctions.calcTotConsumed(self, hall_info)
+            tot_consumed = round(tot_consumed, 2)
+            tot_curKG = round(tot_curKG, 2)
+
+            self.dbSowHistory.insert({'sowName': hall_info.get("sowName"), "boxName": hall_info.get("boxName"),
+                                      'entryDate': hall_info.get("entryDate"), "parDate": hall_info.get("parDate"),
+                                      "exitDate": exit_date.toString("dd/MM/yyyy"),
+                                      "pigBirth": hall_info.get("pigBirth"),
+                                      "pigRealBirth": hall_info.get("pigRealBirth"), "totConsumedKG": tot_consumed,
+                                      "totCurKg": tot_curKG
+                                      })
+            return True
+        else:
+            return False
+
+    def double_click_sow(self):
+        current_row = self.ui.tblHall.currentRow()
+        current_column = self.ui.tblHall.currentColumn()
+        if current_column == 1:
+            self.ui.cboxPigBox.setCurrentIndex(0)
+            sow_name = self.ui.tblHall.item(current_row, current_column)
+            self.ui.stackedWidget.setCurrentIndex(8)
+            self.ui.searchPanel.setText(sow_name.text())
+            SWFunctions.sow_search(self)
+        elif current_column == 0:
+            self.ui.cboxPigBox.setCurrentIndex(1)
+            box_name = self.ui.tblHall.item(current_row, current_column)
+            self.ui.stackedWidget.setCurrentIndex(8)
+            self.ui.searchPanel.setText(box_name.text())
+            SWFunctions.sow_search(self)
+
+    def sow_table_cbox_changed(self):
+        self.ui.sowStatus.setText("")
+        item = None
+        if self.ui.cboxPigBox.currentIndex() == 0:
+            item = QTableWidgetItem("Gabbia")
+        elif self.ui.cboxPigBox.currentIndex() == 1:
+            item = QTableWidgetItem("Scrofa")
+
+        item.setTextAlignment(Qt.AlignLeft)
+        item.setTextAlignment(Qt.AlignVCenter)
+
+        self.ui.tblSowRecord.setHorizontalHeaderItem(0, item)
+        self.ui.tblSowRecord.setRowCount(0)
+
+    def sow_search(self):
+        self.ui.sowStatus.setText("")
+
+        name = self.ui.searchPanel.text().lstrip().rstrip()
+        hall = None
+        history = []
+        if self.ui.cboxPigBox.currentIndex() == 0:
+            hall = self.dbHall.get(self.query.sowName == name)
+            history = self.dbSowHistory.search(self.query.sowName == name)
+        elif self.ui.cboxPigBox.currentIndex() == 1:
+            hall = self.dbHall.get(self.query.boxName == name)
+            history = self.dbSowHistory.search(self.query.boxName == name)
+
+        if hall is not None or len(history) > 0:
+            row_index = 0
+            column_index = 0
+            rows = len(history) + (1 if hall is not None else 0)
+            print(rows)
+            self.ui.tblSowRecord.setRowCount(rows)
+
+            if hall is not None:
+                pardate = hall.get("parDate")
+                if pardate == 0:
+                    pardate = "gestazione"
+                tot_consumed, tot_curKG = SWFunctions.calcTotConsumed(self, hall)
+
+                if self.ui.cboxPigBox.currentIndex() == 0:
+                    self.ui.tblSowRecord.setItem(row_index, 0, QTableWidgetItem(hall.get("boxName")))
+                elif self.ui.cboxPigBox.currentIndex() == 1:
+                    self.ui.tblSowRecord.setItem(row_index, 0, QTableWidgetItem(hall.get("sowName")))
+
+                self.ui.tblSowRecord.setItem(row_index, 1, QTableWidgetItem(hall.get("entryDate")))
+                self.ui.tblSowRecord.setItem(row_index, 2, QTableWidgetItem(pardate))
+                self.ui.tblSowRecord.setItem(row_index, 3, QTableWidgetItem("in sala"))
+                self.ui.tblSowRecord.setItem(row_index, 4, QTableWidgetItem(str(hall.get("pigBirth"))))
+                self.ui.tblSowRecord.setItem(row_index, 5, QTableWidgetItem(str(hall.get("pigRealBirth"))))
+                self.ui.tblSowRecord.setItem(row_index, 6, QTableWidgetItem(str(tot_consumed)))
+                self.ui.tblSowRecord.setItem(row_index, 7, QTableWidgetItem(str(tot_curKG)))
+                row_index += 1
+
+            if len(history) > 0:
+                print(history)
+                for item in history:
+                    column_index = 0
+                    for key, value in item.items():
+                        if self.ui.cboxPigBox.currentIndex() == 0:
+                            if key != "sowName":
+                                self.ui.tblSowRecord.setItem(row_index, column_index, QTableWidgetItem(str(value)))
+                                column_index += 1
+                        elif self.ui.cboxPigBox.currentIndex() == 1:
+                            if key != "boxName":
+                                self.ui.tblSowRecord.setItem(row_index, column_index, QTableWidgetItem(str(value)))
+                                column_index += 1
+                    row_index += 1
+        else:
+            if self.ui.cboxPigBox.currentIndex() == 0:
+                self.ui.sowStatus.setText("La scrofa con questo nome non è stata trovata")
+            elif self.ui.cboxPigBox.currentIndex() == 1:
+                self.ui.sowStatus.setText("La gabbia con questo nome non è stata trovata")
+            self.ui.tblSowRecord.setRowCount(0)
+
     def sort_table(self):
         hall = []
         current_column = self.ui.tblHall.currentColumn()
@@ -404,32 +542,37 @@ class SWFunctions():
             consumedKG = 0
             curKG = 0
             try:
-                consumedKG = int(item.get("readNowFeedKG")) / 1000
-                curKG = int(item.get("curKGToday")) / 1000
+                consumedKG = float(item.get("readNowFeedKG")) / 1000
+                curKG = float(item.get("curKGToday")) / 1000
             except Exception as e:
                 pass
 
             if item.get("sowName") is not None and item.get("entryDate") is not None:
-                if not self.dbSowRecord.contains((self.query.sowName == item.get("sowName")) & (self.query.entryDate == item.get("entryDate")) & (self.query.day_recorded == today)):
+                if not self.dbSowRecord.contains((self.query.sowName == item.get("sowName")) & (
+                        self.query.entryDate == item.get("entryDate")) & (self.query.day_recorded == today)):
                     self.dbSowRecord.insert(
                         {'sowName': item.get("sowName"), 'entryDate': item.get("entryDate"), 'day_recorded': today,
-                         'consumedKG': str(consumedKG), 'curKG': str(curKG)})
+                         'consumedKG': str(round(consumedKG, 3)), 'curKG': str(round(curKG, 2))})
                 else:
                     readNowFeedKG = 0
                     saved_readNowFeedKG = 0
                     try:
-                        readNowFeedKG = int(item.get("readNowFeedKG"))/1000
+                        readNowFeedKG = float(item.get("readNowFeedKG")) / 1000
                     except Exception as e:
                         pass
 
                     try:
-                        record = self.dbSowRecord.get((self.query.sowName == item.get("sowName")) & (self.query.entryDate == item.get("entryDate")) & (self.query.day_recorded == today))
+                        record = self.dbSowRecord.get((self.query.sowName == item.get("sowName")) & (
+                                    self.query.entryDate == item.get("entryDate")) & (self.query.day_recorded == today))
                         saved_readNowFeedKG = float(record.get("consumedKG"))
                     except:
                         pass
 
                     if readNowFeedKG > saved_readNowFeedKG:
-                        self.dbSowRecord.update({"consumedKG": str(readNowFeedKG)},(self.query.sowName == item.get("sowName")) & (self.query.entryDate == item.get("entryDate")) & (self.query.day_recorded == today))
+                        self.dbSowRecord.update({"consumedKG": str(readNowFeedKG)},
+                                                (self.query.sowName == item.get("sowName")) & (
+                                                            self.query.entryDate == item.get("entryDate")) & (
+                                                            self.query.day_recorded == today))
 
         SWFunctions.loadHall(self)
 
@@ -451,7 +594,7 @@ class SWFunctions():
         if (tot_curKG == 0):
             tot_curKG = 1
 
-        return tot_consumed, (tot_consumed / tot_curKG * 100)
+        return round(tot_consumed, 2), round((tot_consumed / tot_curKG * 100), 2)
 
     def calcPerc(self, hallData, curKG, date):
         perc = 0
@@ -465,8 +608,8 @@ class SWFunctions():
         else:
             try:
                 record = self.dbSowRecord.search((self.query.sowName == hallData.get("sowName")) & (
-                            self.query.entryDate == hallData.get("entryDate")) & (
-                                                             self.query.day_recorded == date.toString("dd/MM/yyyy")))
+                        self.query.entryDate == hallData.get("entryDate")) & (
+                                                         self.query.day_recorded == date.toString("dd/MM/yyyy")))
                 curKG = float(record[0].get("curKG"))
                 if curKG > 0:
                     perc = int(float(record[0].get("consumedKG")) / float(record[0].get("curKG")) * 100)
