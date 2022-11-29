@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import pandas as pd
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 
 from main import *
 
@@ -188,54 +189,60 @@ class UIFunctions():
 
 
     def xuinia(self):
+        pass
+        # gestazione = []
+        # curva = self.dbCurve.get(doc_id=self.ui.spiCurve.value())
+        # for i in range(15):
+        #     gestazione.append(float(curva.get('{}'.format(i))))
+        #
+        # self.sow_history_figure, self.aaxx = plt.subplots()
+        #
+        # data = {"gestazione": gestazione}
+        # data.update({"giorni": [i for i in range(0, 15)]})
+        #
+        # data_frame = pd.DataFrame(data)
+        # data_frame.plot(x="giorni", y="gestazione", kind ="line", marker="o", ax = self.aaxx)
+        #
+        # plotWidget = FigureCanvasQTAgg(self.sow_history_figure)
+        # plt.show()
+        # layout = QVBoxLayout()
+        # layout.addWidget(plotWidget)
+        # self.ui.pigGraph.setLayout(layout)
 
+
+    def draw_sow_history(self):
+        UIFunctions.get_dataframe(self)
         gestazione = []
         curva = self.dbCurve.get(doc_id=self.ui.spiCurve.value())
         for i in range(15):
             gestazione.append(float(curva.get('{}'.format(i))))
 
-        # for param in ['text.color', 'axes.labelcolor', 'xtick.color', 'ytick.color']:
-        #     plt.rcParams[param] = '0.9'
-        # for param in ['figure.facecolor', 'axes.facecolor', 'savefig.facecolor']:
-        #     plt.rcParams[param] = '#3f3c5b'
-        # colors = [
-        # '#08F7FE',  # teal/cyan
-        # '#FE53BB',  # pink
-        # '#F5D300',  # yellow
-        # '#00ff41',  # matrix green
-        # ]
-
-        self.sow_history_figure = plt.figure()
+        self.sow_history_figure, self.aaxx = plt.subplots()
 
         data = {"gestazione": gestazione}
         data.update({"giorni": [i for i in range(0, 15)]})
 
         data_frame = pd.DataFrame(data)
-        data_frame.plot(x="giorni", y="gestazione", kind ="line", marker="o")
+        data_frame.plot(x="giorni", y="gestazione", kind ="line", marker="o", ax = self.aaxx)
+        data_frame.plot(y="giorni", x="gestazione", kind ="line", marker="o", ax = self.aaxx)
+
+        plotWidget = FigureCanvasQTAgg(self.sow_history_figure)
         plt.show()
-        plotWidget = FigureCanvas(plt)
         layout = QVBoxLayout()
         layout.addWidget(plotWidget)
         self.ui.pigGraph.setLayout(layout)
 
-        # self.sow_history_figure = plt.subplots()
-        # plt.plot([1, 2, 3, 4])
-        # plt.show()
-        # plotWidget = FigureCanvas(self.sow_history_figure)
-        # layout = QVBoxLayout()
-        # layout.addWidget(plotWidget)
-        # self.ui.pigGraph.setLayout(layout)
 
-    def draw_sow_history(self):
+    def get_dataframes(self):
+        current_row = self.ui.tblSowRecord.currentRow()
+        current_column = self.ui.tblSowRecord.currentColumn()
 
-        self.history_figure = plt.figure("pjzda")
-        plt.plot([2, 2, 3, 4])
-        plt.show()
-        plotWidget = FigureCanvas(self.history_figure)
-        layout = QVBoxLayout()
-        layout.addWidget(plotWidget)
-        self.ui.pigGraph.setLayout(layout)
+        sow_name = self.ui.tblSowRecord.item(current_row, 0).text()
+        entry_date = self.ui.tblSowRecord.item(current_row, 1).text()
 
+        data = self.dbSowRecord.search((self.query.sowName == sow_name) & (self.query.entryDate == entry_date))
+
+        # print(data)
 
         # item = 0
         # xui = []
