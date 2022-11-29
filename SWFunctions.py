@@ -470,7 +470,6 @@ class SWFunctions():
                 row_index += 1
 
             if len(history) > 0:
-                print(history)
                 for item in history:
                     column_index = 0
                     for key, value in item.items():

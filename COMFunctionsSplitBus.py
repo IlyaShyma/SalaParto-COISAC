@@ -17,7 +17,6 @@ subject = "Schede offline"
 class COMClass(QThread):
 
     def __init__(self, comUI, self2):
-        print("sono qua")
         super().__init__()
         self.ui = self2.ui
         self.self = self2
