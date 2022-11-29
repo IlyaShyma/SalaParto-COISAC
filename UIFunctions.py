@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-
+import pandas as pd
 
 from main import *
 
@@ -189,16 +189,44 @@ class UIFunctions():
 
     def xuinia(self):
 
-        self.sow_history_figure = plt.figure("xui")
-        plt.plot([1, 2, 3, 4])
+        gestazione = []
+        curva = self.dbCurve.get(doc_id=self.ui.spiCurve.value())
+        for i in range(15):
+            gestazione.append(float(curva.get('{}'.format(i))))
+
+        # for param in ['text.color', 'axes.labelcolor', 'xtick.color', 'ytick.color']:
+        #     plt.rcParams[param] = '0.9'
+        # for param in ['figure.facecolor', 'axes.facecolor', 'savefig.facecolor']:
+        #     plt.rcParams[param] = '#3f3c5b'
+        # colors = [
+        # '#08F7FE',  # teal/cyan
+        # '#FE53BB',  # pink
+        # '#F5D300',  # yellow
+        # '#00ff41',  # matrix green
+        # ]
+
+        self.sow_history_figure = plt.figure()
+
+        data = {"gestazione": gestazione}
+        data.update({"giorni": [i for i in range(0, 15)]})
+
+        data_frame = pd.DataFrame(data)
+        data_frame.plot(x="giorni", y="gestazione", kind ="line", marker="o")
         plt.show()
-        plotWidget = FigureCanvas(self.sow_history_figure)
+        plotWidget = FigureCanvas(plt)
         layout = QVBoxLayout()
         layout.addWidget(plotWidget)
         self.ui.pigGraph.setLayout(layout)
 
-    def draw_sow_history(self):
+        # self.sow_history_figure = plt.subplots()
+        # plt.plot([1, 2, 3, 4])
+        # plt.show()
+        # plotWidget = FigureCanvas(self.sow_history_figure)
+        # layout = QVBoxLayout()
+        # layout.addWidget(plotWidget)
+        # self.ui.pigGraph.setLayout(layout)
 
+    def draw_sow_history(self):
 
         self.history_figure = plt.figure("pjzda")
         plt.plot([2, 2, 3, 4])

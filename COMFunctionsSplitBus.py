@@ -135,7 +135,8 @@ class COMClass(QThread):
                     hall_number = int(boxPos.get("hallPos")) - 1
                 except:
                     pass
-                if self.self.master[hall_number] and hall_number != -1:
+                # if self.self.master[hall_number] and hall_number != -1:
+                if hall_number != -1:
                     try:
                         boxCom = int(boxPos.get('comPos'))
                         # if boxCom in [30, 40]:
@@ -161,7 +162,8 @@ class COMClass(QThread):
                 hall_number = int(boxPos.get("hallPos")) - 1
             except:
                 pass
-            if self.self.master[hall_number] and hall_number != -1:
+            # if self.self.master[hall_number] and hall_number != -1:
+            if hall_number != -1:
                 try:
                     boxCom = int(boxPos.get('comPos'))
                     if boxCom > 0:
@@ -236,7 +238,7 @@ class COMClass(QThread):
             except:
                 pass
 
-            if self.self.master[hall_number] and hall_number != -1:
+            if hall_number != -1:
                 try:
                     boxPos = self.self.dbBox.get(self.self.query.boxName == item.get('boxName'))
                     qty_giornaliera = int(item.get('curKGToday'))
@@ -260,7 +262,7 @@ class COMClass(QThread):
     def setTime(self):
         self.offline = []
         for item in self.self.dbHall:
-
+            print(item)
             boxPos = self.self.dbBox.get(self.self.query.boxName == item.get('boxName'))
             hall_number = -1
             try:
@@ -268,7 +270,8 @@ class COMClass(QThread):
             except:
                 pass
 
-            if self.self.master[hall_number] and hall_number != -1:
+            # if self.self.master[hall_number] and hall_number != -1:
+            if hall_number != -1:
                 try:
                     now = QDateTime.currentSecsSinceEpoch()
                     boxCom = int(boxPos.get('comPos'))

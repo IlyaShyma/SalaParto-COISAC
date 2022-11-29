@@ -59,7 +59,7 @@ class MainWindow(QMainWindow):
         # # TMFunctions.setCom(self)
         # # TMFunctions.showDateTime(self)
 
-        # UIFunctions.xuinia(self)
+        UIFunctions.xuinia(self)
 
         SWFunctions.loadHall(self)
         UIFunctions.sowGraph(self)
@@ -107,7 +107,7 @@ class MainWindow(QMainWindow):
         # PAGE PIG FUNCTIONS
         self.ui.btnSearch.pressed.connect(lambda: SWFunctions.sow_search(self))
         self.ui.cboxPigBox.currentIndexChanged.connect(lambda: SWFunctions.sow_table_cbox_changed(self))
-        # self.ui.tblSowRecord.pressed.connect(lambda: UIFunctions.draw_sow_history(self))
+        self.ui.tblSowRecord.pressed.connect(lambda: UIFunctions.draw_sow_history(self))
 
 
         # PAGE CURVE FUNCTIONS
