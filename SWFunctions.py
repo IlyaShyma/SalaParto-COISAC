@@ -382,7 +382,9 @@ class SWFunctions():
 
     def archive_sow(self, exit_date, hall_info):
         if hall_info.get("sowName") is not None and hall_info.get("boxName") is not None and \
-                hall_info.get("entryDate") is not None:
+                hall_info.get("entryDate") is not None and hall_info.get("nrCurve") is not None and\
+                hall_info.get("sowSit") is not None and hall_info.get("curDay") is not None:
+
 
             tot_consumed, tot_curKG = SWFunctions.calcTotConsumed(self, hall_info)
             tot_consumed = round(tot_consumed, 2)
@@ -393,7 +395,8 @@ class SWFunctions():
                                       "exitDate": exit_date.toString("dd/MM/yyyy"),
                                       "pigBirth": hall_info.get("pigBirth"),
                                       "pigRealBirth": hall_info.get("pigRealBirth"), "totConsumedKG": tot_consumed,
-                                      "totCurKg": tot_curKG
+                                      "totCurKg": tot_curKG, "nrCurve": hall_info.get("nrCurve"),
+                                      "sowSit": hall_info.get("sowSit"), "curDay": hall_info.get("curDay")
                                       })
             return True
         else:
@@ -446,7 +449,6 @@ class SWFunctions():
             row_index = 0
             column_index = 0
             rows = len(history) + (1 if hall is not None else 0)
-            print(rows)
             self.ui.tblSowRecord.setRowCount(rows)
 
             if hall is not None:

@@ -21,6 +21,9 @@ from matplotlib.backends.backend_qt5agg import (
         FigureCanvas, NavigationToolbar2QT as NavigationToolbar)
 import numpy as np
 
+#myiports
+from matplotlib.figure import Figure
+
 # FUNCTIONS IMPORT
 from UIFunctions import *
 from SWFunctions import *
@@ -59,10 +62,12 @@ class MainWindow(QMainWindow):
         # # TMFunctions.setCom(self)
         # # TMFunctions.showDateTime(self)
 
-        UIFunctions.xuinia(self)
+
 
         SWFunctions.loadHall(self)
         UIFunctions.sowGraph(self)
+        UIFunctions.base_sow_graph(self)
+
         #COMFunctions.startCom(self)
         #TMFunctions.singleShotLoadRation(self)
 
@@ -107,8 +112,8 @@ class MainWindow(QMainWindow):
         # PAGE PIG FUNCTIONS
         self.ui.btnSearch.pressed.connect(lambda: SWFunctions.sow_search(self))
         self.ui.cboxPigBox.currentIndexChanged.connect(lambda: SWFunctions.sow_table_cbox_changed(self))
-        self.ui.tblSowRecord.pressed.connect(lambda: UIFunctions.draw_sow_history(self))
-
+        self.ui.tblSowRecord.pressed.connect(lambda: UIFunctions.sow_graph_cbox_changed(self))
+        self.ui.cboxCurve.currentIndexChanged.connect(lambda: UIFunctions.sow_graph_cbox_changed(self))
 
         # PAGE CURVE FUNCTIONS
         self.ui.spiCurve.valueChanged.connect(lambda: SWFunctions.loadCurve(self))

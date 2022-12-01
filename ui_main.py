@@ -2541,6 +2541,16 @@ class Ui_MainWindow(object):
         self.frPigRight.setFrameShadow(QFrame.Raised)
         self.verticalLayout_21 = QVBoxLayout(self.frPigRight)
         self.verticalLayout_21.setObjectName(u"verticalLayout_21")
+        self.cboxCurve = QComboBox(self.frPigRight)
+        self.cboxCurve.addItem("")
+        self.cboxCurve.addItem("")
+        self.cboxCurve.setObjectName(u"cboxCurve")
+        self.cboxCurve.setMinimumSize(QSize(0, 30))
+        self.cboxCurve.setLayoutDirection(Qt.LeftToRight)
+        self.cboxCurve.setSizeAdjustPolicy(QComboBox.AdjustToContentsOnFirstShow)
+
+        self.verticalLayout_21.addWidget(self.cboxCurve)
+
         self.pigGraph = QWidget(self.frPigRight)
         self.pigGraph.setObjectName(u"pigGraph")
         sizePolicy6 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -2590,7 +2600,7 @@ class Ui_MainWindow(object):
         self.scrollAreaSettingsMain.setWidgetResizable(True)
         self.scrollAreaSettings = QWidget()
         self.scrollAreaSettings.setObjectName(u"scrollAreaSettings")
-        self.scrollAreaSettings.setGeometry(QRect(0, 0, 1322, 780))
+        self.scrollAreaSettings.setGeometry(QRect(0, 0, 591, 780))
         self.verticalLayout_18 = QVBoxLayout(self.scrollAreaSettings)
         self.verticalLayout_18.setObjectName(u"verticalLayout_18")
         self.frSettings3 = QFrame(self.scrollAreaSettings)
@@ -3184,6 +3194,9 @@ class Ui_MainWindow(object):
         ___qtablewidgetitem57.setText(QCoreApplication.translate("MainWindow", u"tot consumato", None));
         ___qtablewidgetitem58 = self.tblSowRecord.horizontalHeaderItem(7)
         ___qtablewidgetitem58.setText(QCoreApplication.translate("MainWindow", u"% sul teorico", None));
+        self.cboxCurve.setItemText(0, QCoreApplication.translate("MainWindow", u"Gestazione", None))
+        self.cboxCurve.setItemText(1, QCoreApplication.translate("MainWindow", u"Parto", None))
+
         self.lblSettings.setText(QCoreApplication.translate("MainWindow", u"Impostazione Software", None))
         self.lblSetMaxHall_3.setText(QCoreApplication.translate("MainWindow", u"A Box", None))
         self.spiSetModCur.setSuffix("")

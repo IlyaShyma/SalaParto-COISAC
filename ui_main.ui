@@ -5489,6 +5489,32 @@ color: white;
                          </property>
                          <layout class="QVBoxLayout" name="verticalLayout_21">
                           <item>
+                           <widget class="QComboBox" name="cboxCurve">
+                            <property name="minimumSize">
+                             <size>
+                              <width>0</width>
+                              <height>30</height>
+                             </size>
+                            </property>
+                            <property name="layoutDirection">
+                             <enum>Qt::LeftToRight</enum>
+                            </property>
+                            <property name="sizeAdjustPolicy">
+                             <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
+                            </property>
+                            <item>
+                             <property name="text">
+                              <string>Gestazione</string>
+                             </property>
+                            </item>
+                            <item>
+                             <property name="text">
+                              <string>Parto</string>
+                             </property>
+                            </item>
+                           </widget>
+                          </item>
+                          <item>
                            <widget class="QWidget" name="pigGraph" native="true">
                             <property name="sizePolicy">
                              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -5591,7 +5617,7 @@ color: white;
                         <rect>
                          <x>0</x>
                          <y>0</y>
-                         <width>1322</width>
+                         <width>591</width>
                          <height>780</height>
                         </rect>
                        </property>
