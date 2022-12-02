@@ -130,6 +130,7 @@ class UIFunctions():
 
         # self.fig, self.ax = plt.subplots()
         self.fig = Figure()
+        self.fig.set_tight_layout(1)
         self.ax = self.fig.add_subplot(111)
 
         self.df.plot(marker='o', color=colors,
@@ -212,11 +213,12 @@ class UIFunctions():
         self.data_frame = pd.DataFrame(gestazione)
         plt.subplots_adjust(left=0, bottom=0, right=1, top=1, wspace=0, hspace=0)
         # self.figura, self.axxx = plt.subplots()
-        self.figura = Figure()
+        self.figura = Figure(figsize=(8, 6), dpi=100)
+        self.figura.set_tight_layout(1)
         self.axxx = self.figura.add_subplot(111)
 
         # self.data_frame.plot(x="giorni", y="gestazione", marker='o', color=colors, ax=self.axxx)
-        self.df.plot(marker='o', color=colors, ax=self.ax)
+        self.df.plot(marker='o', color=colors, ax=self.axxx)
 
         n_shades = 10
         diff_linewidth = 1.05
@@ -252,20 +254,46 @@ class UIFunctions():
         ]
 
         self.axxx.cla()
-
-        # df_ideal = UIFunctions.get_dataframes_parto(self)
-        # df_real = UIFunctions.get_real_curve(self)
+        colorato = colors[1]
 
         self.data_frame = pd.DataFrame(df_ideal)
-        # self.data_frame.plot(x="giorni", y="parto", kind ="line", marker="o", ax = self.axxx)
+        self.data_frame.plot(x="giorni", y="teorico", marker='o', ax=self.axxx, color=colors[1])
 
-        self.data_frame.plot(x="giorni", y="teorico", marker='o', ax=self.axxx)
+
+
+        n_shades = 10
+        diff_linewidth = 1.05
+        alpha_value = 0.3 / n_shades
+        for n in range(1, n_shades + 1):
+            self.data_frame.plot(x="giorni", y="teorico", marker='o', linewidth=2 + (diff_linewidth * n), alpha=alpha_value, legend=False,
+                         ax=self.axxx, color=colors[1])
+        for column, color in zip(self.data_frame, colors):
+            self.axxx.fill_between(x=self.data_frame["giorni"], y1=self.data_frame["teorico"], y2=[0] * len(self.data_frame), color=colorato, alpha=0.1)
+        self.axxx.grid(color='#2d2b42')
+        self.axxx.set_xlim([self.axxx.get_xlim()[0] - 0.2, self.axxx.get_xlim()[1] + 0.2])
+        plt.subplots_adjust(top=0.9, bottom=0.1, right=0.95, left=0.05, hspace=1, wspace=0)
+
 
         self.data_frame = pd.DataFrame(df_real)
-        self.data_frame.plot(x="giorni", y="consumato", marker='o', ax=self.axxx)
+        self.data_frame.plot(x="giorni", y="consumato", marker='o', ax=self.axxx, color=colors[3])
 
-        plt.ylabel("KILOGRAMMI")
-        plt.xlabel("GIORNI")
+        n_shades = 10
+        diff_linewidth = 1.05
+        alpha_value = 0.3 / n_shades
+        for n in range(1, n_shades + 1):
+            self.data_frame.plot(x="giorni", y="consumato", marker='o', linewidth=2 + (diff_linewidth * n), alpha=alpha_value, legend=False,
+                         ax=self.axxx, color=colors[3])
+        for column, color in zip(self.data_frame, colors):
+            self.axxx.fill_between(x=self.data_frame["giorni"], y1=self.data_frame["consumato"], y2=[0] * len(self.data_frame), color=colors[3], alpha=0.1)
+        self.axxx.grid(color='#2d2b42')
+        self.axxx.set_xlim([self.axxx.get_xlim()[0] - 0.2, self.axxx.get_xlim()[1] + 0.2])
+        plt.subplots_adjust(top=0.9, bottom=0.1, right=0.95, left=0.05, hspace=1, wspace=0)
+
+
+
+
+        plt.ylabel("KG")
+        plt.xlabel("GIORNI", fontsize=15)
         plt.margins(0.2, 0.2)
         plt.box(False)
         self.figura.canvas.draw_idle()
@@ -294,7 +322,6 @@ class UIFunctions():
             try:
                 history_data = self.dbSowHistory.get((self.query.sowName == name) & (self.query.entryDate == entry_date))
                 nr_curve = history_data.get("nrCurve")
-
             except:
                 pass
 
@@ -367,22 +394,22 @@ class UIFunctions():
 
         sow_record = self.dbSowRecord.search(
             (self.query.sowName == name) & (self.query.entryDate == entry_date))
-        print(sow_record)
+        # print(sow_record)
 
         for element in sow_record:
             day_recorded = QDate.fromString(element.get("day_recorded"), "dd/MM/yyyy")
             consumedKG = float(element.get("consumedKG"))
-            print(str(sow_sit) + " " +day_recorded.toString("dd/MM/yyyy") + " " + cur_day.toString("dd/MM/yyyy") + " " + str(
-                consumedKG))
+            print(name)
+            print(str(sow_sit) + " " +day_recorded.toString("dd/MM/yyyy") + " " + cur_day.toString("dd/MM/yyyy") + " " + str(consumedKG))
             if sow_sit == 1:
                 if day_recorded >= cur_day:
-                    real_parto_kg.append(consumedKG)
+                    real_parto_kg.append(round(consumedKG,1))
                     real_parto_day.append(cur_day.daysTo(day_recorded) + 1)
                 else:
-                    real_gestazione_kg.append(consumedKG)
+                    real_gestazione_kg.append(round(consumedKG,1))
                     real_gestazione_day.append(day_recorded.daysTo(cur_day) + 1)
             elif sow_sit == 0:
-                real_gestazione_kg.append(consumedKG)
+                real_gestazione_kg.append(round(consumedKG,1))
                 real_gestazione_day.append(cur_day.daysTo(day_recorded) + 1)
 
         df_real_parto = {"consumato": real_parto_kg}
@@ -401,13 +428,6 @@ class UIFunctions():
             ideal_curve_gestazione[i] = float(curve.get(str(i)))
 
         df_ideal_gestazione = {"gestazione": ideal_curve_gestazione}
-        # df_ideal_gestazione.update({"giorni": [i for i in range(0, 15)]})
-        ideal_curve_parto = [None] * 35
-        for i in range(15, 50):
-            ideal_curve_parto[i - 15] = float(curve.get(str(i)))
-
-        df_ideal_parto = {"parto": ideal_curve_parto}
-        df_ideal_parto.update({"giorni": [i for i in range(0, 35)]})
         return df_ideal_gestazione
 
     def sow_graph_cbox_changed(self):

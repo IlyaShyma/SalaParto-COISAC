@@ -262,7 +262,6 @@ class COMClass(QThread):
     def setTime(self):
         self.offline = []
         for item in self.self.dbHall:
-            print(item)
             boxPos = self.self.dbBox.get(self.self.query.boxName == item.get('boxName'))
             hall_number = -1
             try:
