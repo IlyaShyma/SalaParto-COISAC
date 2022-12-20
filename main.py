@@ -84,7 +84,9 @@ class MainWindow(QMainWindow):
 
         # LOAD BUTTONS AND PAGES
         self.ui.comLanguage.currentTextChanged.connect(lambda: TRFunctions.updLanguage(self))
-        self.ui.btnHall.pressed.connect(lambda: (self.ui.stackedWidget.setCurrentIndex(1), SWFunctions.loadHall(self)))
+        # self.ui.btnHall.pressed.connect(lambda: (self.ui.stackedWidget.setCurrentIndex(1), SWFunctions.loadHall(self)))
+        self.ui.btnHall.pressed.connect(lambda: (self.ui.stackedWidget.setCurrentIndex(1), SWFunctions.display_hall(self)))
+
         self.ui.btnCurve.pressed.connect(lambda: self.ui.stackedWidget.setCurrentIndex(2))
         self.ui.btnTime.pressed.connect(lambda: self.ui.stackedWidget.setCurrentIndex(3))
         self.ui.btnStock.pressed.connect(lambda: self.ui.stackedWidget.setCurrentIndex(4))
@@ -97,7 +99,8 @@ class MainWindow(QMainWindow):
         self.ui.btnPig.pressed.connect(lambda: self.ui.stackedWidget.setCurrentIndex(8))
 
         # PAGE HALL FUNCTIONS
-        self.ui.spiHall.valueChanged.connect(lambda: SWFunctions.loadHall(self))
+        # self.ui.spiHall.valueChanged.connect(lambda: SWFunctions.loadHall(self))
+        self.ui.spiHall.valueChanged.connect(lambda: SWFunctions.display_hall(self))
         self.ui.btnHallExp.pressed.connect(lambda: SWFunctions.exportXLSXHall(self))
         self.ui.btnClose.pressed.connect(lambda: SWFunctions.closeAll(self))
         # self.ui.btnHallRem.pressed.connect(lambda: SWFunctions.removeHall(self))

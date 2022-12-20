@@ -401,7 +401,7 @@ font-size: 15pt;</string>
                 <enum>QFrame::Plain</enum>
                </property>
                <property name="text">
-                <string>v1.0.4</string>
+                <string>v1.1.0</string>
                </property>
                <property name="alignment">
                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -5731,7 +5731,7 @@ color: white;
                         <rect>
                          <x>0</x>
                          <y>0</y>
-                         <width>592</width>
+                         <width>591</width>
                          <height>780</height>
                         </rect>
                        </property>

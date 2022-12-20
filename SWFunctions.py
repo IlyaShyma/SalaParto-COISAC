@@ -14,7 +14,6 @@ class SWFunctions():
 
         if self.ui.lblTimer.text() == "00:05:00":
             SWFunctions.loadHall(self)
-
         if self.activeFeed:
             sow_rec_save_time = self.dbTime.get(doc_id=self.activeFeed)
             time_to_call_funct = QTime.fromString(sow_rec_save_time.get("to"), "HH:mm")
@@ -186,75 +185,83 @@ class SWFunctions():
             self.ui.tblTime.setItem(item.doc_id - 1, 2, QTableWidgetItem(item.get('active')))
 
     def loadHall(self):
-        SWFunctions.display_hall(self)
+        self.static_perc_yesterday = {}
+        self.static_perc_bf_yesterday = {}
 
-        sorted_hall = []
+        self.static_tot_consumed = {}
+        self.static_tot_perc = {}
+
         i = 0
-        self.ui.tblHall.setRowCount(i)
-        self.ui.tblHall.setRowCount(self.dbBox.count(self.query.hallPos == self.ui.spiHall.value()))
+        # self.ui.tblHall.setRowCount(i)
+        # self.ui.tblHall.setRowCount(self.dbBox.count(self.query.hallPos == self.ui.spiHall.value()))
         for item in self.dbBox:
-            if item.get('hallPos') == self.ui.spiHall.value():
-                boxName = item.get('boxName')
-                self.ui.tblHall.setItem(i, 0, QTableWidgetItem(boxName))
-                hallData = self.dbHall.get(self.query.boxName == boxName)
-                if hallData != None:
-                    sowName = hallData.get('sowName')
-                    sowSit = hallData.get('sowSit')
-                    nrCurve = hallData.get('nrCurve')
-                    curDay = (QDate.fromString(hallData.get('curDay'), "dd/MM/yyyy").daysTo(QDate.currentDate()))
-                    curve = self.dbCurve.get(doc_id=int(nrCurve))
-                    if sowSit == 0:
-                        sowSit = "Gestazione"
-                        curDay = curDay + 101
-                        if curDay > 115:
-                            curDay = 115
-                        curValue = curve.get(str(int('{}'.format(curDay)) - 100))
-                    else:
-                        curDay = curDay + 1
-                        if curDay > 35:
-                            curDay = 35
-                        curValue = curve.get(str(int('{}'.format(curDay)) + 14))
-                        sowSit = "Parto"
-                    pigBirth = hallData.get('pigBirth')
-                    pigRealBirth = hallData.get('pigRealBirth')
-                    pigWeight = hallData.get('pigWeight')
-                    try:
-                        curKG = str(int(float(curValue) * 1000))
-                    except:
-                        curKG = 0
-                    self.ui.tblHall.setItem(i, 1, QTableWidgetItem(sowName))
-                    self.ui.tblHall.setItem(i, 2, QTableWidgetItem(sowSit))
-                    self.ui.tblHall.setItem(i, 3, QTableWidgetItem(nrCurve))
-                    self.ui.tblHall.setItem(i, 4, QTableWidgetItem(str(curDay)))
-                    self.ui.tblHall.setItem(i, 5, QTableWidgetItem(curKG))
-                    self.dbHall.upsert({'curKGToday': curKG}, self.query.boxName == boxName)
+            # if item.get('hallPos') == self.ui.spiHall.value():
+            boxName = item.get('boxName')
+            # self.ui.tblHall.setItem(i, 0, QTableWidgetItem(boxName))
+            hallData = self.dbHall.get(self.query.boxName == boxName)
+            if hallData != None:
+                sowName = hallData.get('sowName')
+                sowSit = hallData.get('sowSit')
+                nrCurve = hallData.get('nrCurve')
+                curDay = (QDate.fromString(hallData.get('curDay'), "dd/MM/yyyy").daysTo(QDate.currentDate()))
+                curve = self.dbCurve.get(doc_id=int(nrCurve))
+                if sowSit == 0:
+                    sowSit = "Gestazione"
+                    curDay = curDay + 101
+                    if curDay > 115:
+                        curDay = 115
+                    curValue = curve.get(str(int('{}'.format(curDay)) - 100))
+                else:
+                    curDay = curDay + 1
+                    if curDay > 35:
+                        curDay = 35
+                    curValue = curve.get(str(int('{}'.format(curDay)) + 14))
+                    sowSit = "Parto"
+                pigBirth = hallData.get('pigBirth')
+                pigRealBirth = hallData.get('pigRealBirth')
+                pigWeight = hallData.get('pigWeight')
+                try:
+                    curKG = str(int(float(curValue) * 1000))
+                except:
+                    curKG = 0
+                # self.ui.tblHall.setItem(i, 1, QTableWidgetItem(sowName))
+                # self.ui.tblHall.setItem(i, 2, QTableWidgetItem(sowSit))
+                # self.ui.tblHall.setItem(i, 3, QTableWidgetItem(nrCurve))
+                # self.ui.tblHall.setItem(i, 4, QTableWidgetItem(str(curDay)))
+                # self.ui.tblHall.setItem(i, 5, QTableWidgetItem(curKG))
+                self.dbHall.upsert({'curKGToday': curKG}, self.query.boxName == boxName)
 
-                    num_pasti = self.dbTime.count(self.query.active == "SI")
-                    if num_pasti == 0:
-                        num_pasti = 1
+                num_pasti = self.dbTime.count(self.query.active == "SI")
+                if num_pasti == 0:
+                    num_pasti = 1
 
-                    razione = int(int(curKG) / num_pasti)
-                    self.ui.tblHall.setItem(i, 6, QTableWidgetItem(str(razione)))
-                    self.ui.tblHall.setItem(i, 7, QTableWidgetItem(str(hallData.get('readNowFeedKG'))))
+                razione = int(int(curKG) / num_pasti)
+                # self.ui.tblHall.setItem(i, 6, QTableWidgetItem(str(razione)))
+                # self.ui.tblHall.setItem(i, 7, QTableWidgetItem(str(hallData.get('readNowFeedKG'))))
 
-                    # Ilya
-                    self.ui.tblHall.setItem(i, 8, QTableWidgetItem(str(pigRealBirth)))
+                # Ilya
+                # self.ui.tblHall.setItem(i, 8, QTableWidgetItem(str(pigRealBirth)))
 
-                    perc_today = SWFunctions.calc_percentage(self, hallData, curKG, QDate.currentDate())
-                    self.ui.tblHall.setItem(i, 9, QTableWidgetItem(str(perc_today)))
+                # perc_today = SWFunctions.calc_percentage(self, hallData, curKG, QDate.currentDate())
+                # self.ui.tblHall.setItem(i, 9, QTableWidgetItem(str(perc_today)))
 
-                    perc_yesterday = SWFunctions.calc_percentage(self, hallData, curKG, QDate.currentDate().addDays(-1))
-                    self.ui.tblHall.setItem(i, 10, QTableWidgetItem(str(perc_yesterday)))
+                perc_yesterday = SWFunctions.calc_percentage(self, hallData, curKG, QDate.currentDate().addDays(-1))
+                self.static_perc_yesterday.update({boxName: perc_yesterday})
+                # self.ui.tblHall.setItem(i, 10, QTableWidgetItem(str(perc_yesterday)))
 
-                    perc_bf_yesterday = SWFunctions.calc_percentage(self, hallData, curKG,
-                                                                    QDate.currentDate().addDays(-2))
-                    self.ui.tblHall.setItem(i, 11, QTableWidgetItem(str(perc_bf_yesterday)))
+                perc_bf_yesterday = SWFunctions.calc_percentage(self, hallData, curKG,
+                                                                QDate.currentDate().addDays(-2))
+                self.static_perc_bf_yesterday.update({boxName: perc_bf_yesterday})
+                # self.ui.tblHall.setItem(i, 11, QTableWidgetItem(str(perc_bf_yesterday)))
 
-                    tot_consumed, tot_perc = SWFunctions.calc_tot_consumed(self, hallData)
-                    self.ui.tblHall.setItem(i, 12, QTableWidgetItem("{0:.1f}".format(tot_consumed)))
-                    self.ui.tblHall.setItem(i, 13, QTableWidgetItem("{0:.1f}".format(tot_perc)))
+                tot_consumed, tot_perc = SWFunctions.calc_tot_consumed(self, hallData)
+                self.static_tot_consumed.update({boxName: tot_consumed})
+                self.static_tot_perc.update({boxName: tot_perc})
+                # self.ui.tblHall.setItem(i, 12, QTableWidgetItem("{0:.1f}".format(tot_consumed)))
+                # self.ui.tblHall.setItem(i, 13, QTableWidgetItem("{0:.1f}".format(tot_perc)))
 
-                i += 1
+            i += 1
+        SWFunctions.display_hall(self)
 
     def saveSowInBox(self):
         boxName = self.ui.comAddSelBox.currentText()
@@ -331,6 +338,7 @@ class SWFunctions():
             print("NON HAI SELEZIONATO LA SCROFA DA RIMUOVERE")
 
     def boxSelected(self):
+        SWFunctions.loadAddSowInBox(self)
         try:
             boxToSelect = self.ui.tblHall.item(self.ui.tblHall.currentRow(), 0).text()
             self.ui.comAddSelBox.setCurrentText(boxToSelect)
@@ -762,5 +770,64 @@ class SWFunctions():
 
 
     def display_hall(self):
-        # print(self.perc_yesterday, self.perc_bf_yesterday, self.tot_consumed, self.tot_perc)
-        pass
+        i = 0
+        self.ui.tblHall.setRowCount(i)
+        self.ui.tblHall.setRowCount(self.dbBox.count(self.query.hallPos == self.ui.spiHall.value()))
+        for item in self.dbBox:
+            if item.get('hallPos') == self.ui.spiHall.value():
+                boxName = item.get('boxName')
+                self.ui.tblHall.setItem(i, 0, QTableWidgetItem(boxName))
+                hallData = self.dbHall.get(self.query.boxName == boxName)
+                if hallData != None:
+                    sowName = hallData.get('sowName')
+                    sowSit = hallData.get('sowSit')
+                    nrCurve = hallData.get('nrCurve')
+                    curDay = (QDate.fromString(hallData.get('curDay'), "dd/MM/yyyy").daysTo(QDate.currentDate()))
+                    curve = self.dbCurve.get(doc_id=int(nrCurve))
+                    if sowSit == 0:
+                        sowSit = "Gestazione"
+                        curDay = curDay + 101
+                        if curDay > 115:
+                            curDay = 115
+                        curValue = curve.get(str(int('{}'.format(curDay)) - 100))
+                    else:
+                        curDay = curDay + 1
+                        if curDay > 35:
+                            curDay = 35
+                        curValue = curve.get(str(int('{}'.format(curDay)) + 14))
+                        sowSit = "Parto"
+                    pigBirth = hallData.get('pigBirth')
+                    pigRealBirth = hallData.get('pigRealBirth')
+                    pigWeight = hallData.get('pigWeight')
+                    try:
+                        curKG = str(int(float(curValue) * 1000))
+                    except:
+                        curKG = 0
+                    self.ui.tblHall.setItem(i, 1, QTableWidgetItem(sowName))
+                    self.ui.tblHall.setItem(i, 2, QTableWidgetItem(sowSit))
+                    self.ui.tblHall.setItem(i, 3, QTableWidgetItem(nrCurve))
+                    self.ui.tblHall.setItem(i, 4, QTableWidgetItem(str(curDay)))
+                    self.ui.tblHall.setItem(i, 5, QTableWidgetItem(curKG))
+                    self.dbHall.upsert({'curKGToday': curKG}, self.query.boxName == boxName)
+
+                    num_pasti = self.dbTime.count(self.query.active == "SI")
+                    if num_pasti == 0:
+                        num_pasti = 1
+
+                    razione = int(int(curKG) / num_pasti)
+                    self.ui.tblHall.setItem(i, 6, QTableWidgetItem(str(razione)))
+                    self.ui.tblHall.setItem(i, 7, QTableWidgetItem(str(hallData.get('readNowFeedKG'))))
+
+                    # Ilya
+                    self.ui.tblHall.setItem(i, 8, QTableWidgetItem(str(pigRealBirth)))
+
+                    perc_today = SWFunctions.calc_percentage(self, hallData, curKG, QDate.currentDate())
+                    self.ui.tblHall.setItem(i, 9, QTableWidgetItem(str(perc_today)))
+
+                    self.ui.tblHall.setItem(i, 10, QTableWidgetItem(str(self.static_perc_yesterday.get(boxName))))
+
+                    self.ui.tblHall.setItem(i, 11, QTableWidgetItem(str(self.static_perc_bf_yesterday.get(boxName))))
+
+                    self.ui.tblHall.setItem(i, 12, QTableWidgetItem("{0:.1f}".format(self.static_tot_consumed.get(boxName))))
+                    self.ui.tblHall.setItem(i, 13, QTableWidgetItem("{0:.1f}".format(self.static_tot_perc.get(boxName))))
+                i += 1

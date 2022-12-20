@@ -244,6 +244,11 @@ class COMClass(QThread):
         if len(self.offline) > self.max_offline:
             self.sendmail()
 
+
+    # def reset_feed_com(self, com_pos):
+    #     print("sono qua")
+    #     self.self.master.execute(com_pos, cst.WRITE_SINGLE_REGISTER, 8, output_value=0)
+
     def daily_report(self, file_relative_path):
         # file_name = "reports/myFile.csv"
 
