@@ -101,19 +101,29 @@ class MainWindow(QMainWindow):
         self.ui.btnHallExp.pressed.connect(lambda: SWFunctions.exportXLSXHall(self))
         self.ui.btnClose.pressed.connect(lambda: SWFunctions.closeAll(self))
         # self.ui.btnHallRem.pressed.connect(lambda: SWFunctions.removeHall(self))
+        # self.ui.btnHallRem.pressed.connect(lambda: SWFunctions.save_bf_removeHall(self))
 
-        self.ui.btnHallRem.pressed.connect(lambda: SWFunctions.save_bf_removeHall(self))
+        self.ui.btnHallRem.pressed.connect(lambda: (self.ui.stackedWidget.setCurrentIndex(9), SWFunctions.load_hall_rows_to_remove(self)))
+
 
         self.ui.btnHallLoadCur.pressed.connect(lambda: self.com.start())
 
         self.ui.tblHall.horizontalHeader().sectionClicked.connect(lambda: SWFunctions.sort_table(self))
         self.ui.tblHall.cellDoubleClicked.connect(lambda: SWFunctions.double_click_sow(self))
 
+
         # PAGE PIG FUNCTIONS
         self.ui.btnSearch.pressed.connect(lambda: SWFunctions.sow_search(self))
         self.ui.cboxPigBox.currentIndexChanged.connect(lambda: SWFunctions.sow_table_cbox_changed(self))
         self.ui.tblSowRecord.pressed.connect(lambda: UIFunctions.sow_graph_cbox_changed(self))
         self.ui.cboxCurve.currentIndexChanged.connect(lambda: UIFunctions.sow_graph_cbox_changed(self))
+
+
+        # PAGE REMOVE PIGS FUNCRIONS
+        # self.ui.btnBack.pressed.connect(lambda: self.ui.stackedWidget.setCurrentIndex(1))
+        self.ui.calendarWidget.clicked.connect(lambda: SWFunctions.change_exit_date(self))
+        self.ui.btnRemove.pressed.connect(lambda: SWFunctions.remove_hall(self))
+        self.ui.tblRemove.clicked.connect(lambda: SWFunctions.popup_confirmation_delete(self))
 
         # PAGE CURVE FUNCTIONS
         self.ui.spiCurve.valueChanged.connect(lambda: SWFunctions.loadCurve(self))

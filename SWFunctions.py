@@ -1,3 +1,5 @@
+import smtplib
+
 from main import *
 from FDFunctions import *
 
@@ -19,7 +21,7 @@ class SWFunctions():
             time_to_call_funct = time_to_call_funct.addSecs(-10)
 
             if self.ui.lblTimer.text() == time_to_call_funct.toString("HH:mm:ss"):
-                SWFunctions.saveSowRecord(self)
+                SWFunctions.save_sow_record(self)
 
     def loadDB(self):
         self.dbHall = TinyDB('DB/Hall.json', storage=CachingMiddleware(JSONStorage))
@@ -184,6 +186,8 @@ class SWFunctions():
             self.ui.tblTime.setItem(item.doc_id - 1, 2, QTableWidgetItem(item.get('active')))
 
     def loadHall(self):
+        SWFunctions.display_hall(self)
+
         sorted_hall = []
         i = 0
         self.ui.tblHall.setRowCount(i)
@@ -236,16 +240,17 @@ class SWFunctions():
                     # Ilya
                     self.ui.tblHall.setItem(i, 8, QTableWidgetItem(str(pigRealBirth)))
 
-                    perc_today = SWFunctions.calcPerc(self, hallData, curKG, QDate.currentDate())
+                    perc_today = SWFunctions.calc_percentage(self, hallData, curKG, QDate.currentDate())
                     self.ui.tblHall.setItem(i, 9, QTableWidgetItem(str(perc_today)))
 
-                    perc_yesterday = SWFunctions.calcPerc(self, hallData, curKG, QDate.currentDate().addDays(-1))
+                    perc_yesterday = SWFunctions.calc_percentage(self, hallData, curKG, QDate.currentDate().addDays(-1))
                     self.ui.tblHall.setItem(i, 10, QTableWidgetItem(str(perc_yesterday)))
 
-                    perc_bf_yesterday = SWFunctions.calcPerc(self, hallData, curKG, QDate.currentDate().addDays(-2))
+                    perc_bf_yesterday = SWFunctions.calc_percentage(self, hallData, curKG,
+                                                                    QDate.currentDate().addDays(-2))
                     self.ui.tblHall.setItem(i, 11, QTableWidgetItem(str(perc_bf_yesterday)))
 
-                    tot_consumed, tot_perc = SWFunctions.calcTotConsumed(self, hallData)
+                    tot_consumed, tot_perc = SWFunctions.calc_tot_consumed(self, hallData)
                     self.ui.tblHall.setItem(i, 12, QTableWidgetItem("{0:.1f}".format(tot_consumed)))
                     self.ui.tblHall.setItem(i, 13, QTableWidgetItem("{0:.1f}".format(tot_perc)))
 
@@ -256,6 +261,14 @@ class SWFunctions():
         sowName = self.ui.comAddSelSow.currentText()
         nrCurve = self.ui.comAddSelCur.currentText()
         entryDate = self.ui.spiAddSelEntryDate.date().toString("dd/MM/yyyy")
+
+        curKG = "0"
+        box_data = None
+        try:
+            box_data = self.dbBox.get(self.query.boxName == boxName)
+        except:
+            pass
+
         if self.ui.txtAddCurType.text() == "Gestazione":
             curDay = QDate.currentDate().addDays(101 - int(self.ui.spiAddSelCurDay.value())).toString("dd/MM/yyyy")
             sowSit = 0
@@ -273,8 +286,17 @@ class SWFunctions():
         self.dbHall.upsert(
             {'boxName': boxName, 'sowName': sowName, 'entryDate': entryDate, 'sowSit': sowSit, 'nrCurve': nrCurve,
              'curDay': curDay, 'parDate': parDate, 'pigBirth': pigBirth, 'pigRealBirth': pigRealBirth,
-             'pigWeight': pigWeight}, self.query.boxName == boxName)
+             'pigWeight': pigWeight, 'curKGToday': curKG, 'readNowFeedKG': 0, 'readNowFeedSec': 0}, self.query.boxName == boxName)
+
         SWFunctions.loadHall(self)
+        t.sleep(1)
+        if SWFunctions.reset_single_com(self, box_data):
+            self.ui.lblAddStatus.setText("il COM è stato azzerato")
+        else:
+            self.ui.lblAddStatus.setText("il COM NON è stato azzerato")
+
+
+        # self.reset = True
 
     def updateDaysInBirth(self):
         if self.ui.txtAddCurType.text() == "Parto":
@@ -348,45 +370,126 @@ class SWFunctions():
             self.ui.spiSetComImp.setValue(conf.get('comImp'))
             self.ui.spiSetComCal.setValue(conf.get('comCalib'))
 
-    def save_bf_removeHall(self):
-        hall_to_remove = None
-        try:
-            hall_to_remove = self.ui.tblHall.item(self.ui.tblHall.currentRow(), 1).text()
-            hall_to_remove = self.dbHall.get(self.query.sowName == hall_to_remove)
-        except:
-            print("NON HAI SELEZIONATO LA SCROFA DA RIMUOVERE")
 
-        if hall_to_remove is not None:
-            dlg = QMessageBox(self)
-            dlg.setWindowTitle("I have a question!")
-            dlg.setText("Vuoi salvare i dati della scrofa?")
-            dlg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-            dlg.setIcon(QMessageBox.Question)
-            button = dlg.exec_()
+    def remove_hall(self):
+        rows = self.ui.tblRemove.rowCount()
+        for row in range(rows):
+            exit_date = self.ui.tblRemove.item(row, 2).text()
+            exit_date = QDate.fromString(exit_date, "dd/MM/yyyy")
+            status = None
 
-            if button == QMessageBox.Yes:
-                text, ok = QInputDialog().getText(self, "Data di uscita in questo formato gg/mm/aaaa",
-                                                  "Data di uscita:", QLineEdit.Normal,
-                                                  QDate.currentDate().toString("dd/MM/yyyy"))
-                if ok and text:
-                    exit_date = QDate.fromString(text, "dd/MM/yyyy")
-                    if exit_date.isValid():
-                        if SWFunctions.archive_sow(self, exit_date, hall_to_remove):
-                            SWFunctions.removeHall(self)
-                    else:
-                        print("la data non è corretta")
-            elif button == QMessageBox.No:
-                print("No!")
+            sow_item = self.ui.tblRemove.item(row, 1)
+            if exit_date > QDate.currentDate():
+                status = QTableWidgetItem("exit date is not valid")
+                status.setForeground(QBrush(QColor(255, 0, 0)))
+                self.ui.tblRemove.setItem(row, 3, status)
             else:
-                print("indietro")
+                if bool(sow_item.flags() & Qt.ItemIsEnabled):
+                    hall_number = -1
+                    com_pos = -1
+                    hall_data = {}
+                    try:
+                        hall_data = self.dbHall.get(self.query.sowName == sow_item.text())
+                        box_data = self.dbBox.get(self.query.boxName == hall_data.get("boxName"))
+                        com_pos = int(box_data.get("comPos"))
+                        hall_number = int(box_data.get("hallPos") - 1)
+                    except Exception as e:
+                        print(e)
+
+                    if self.ui.tblRemove.item(row, 4).text() == "SI":
+                        if SWFunctions.archive_sow(self, exit_date, hall_data) and com_pos != -1 and hall_number != -1:
+                            status = QTableWidgetItem("success")
+                            status.setForeground(QBrush(QColor(0, 255, 0)))
+                            sow_item.setFlags(sow_item.flags() & ~Qt.ItemIsEnabled)
+
+                            self.ui.tblRemove.item(row, 0).setFlags(sow_item.flags() & ~Qt.ItemIsEnabled)
+                            self.ui.tblRemove.item(row, 2).setFlags(sow_item.flags() & ~Qt.ItemIsEnabled)
+                            self.dbHall.remove(self.query.sowName == sow_item.text())
+
+                            self.ui.tblRemove.setItem(row, 3, status)
+                        else:
+                            status = QTableWidgetItem("control that all sow data has been filled correctly")
+                            status.setForeground(QBrush(QColor(255, 0, 0)))
+                            self.ui.tblRemove.setItem(row, 3, status)
+                    else:
+                        status = QTableWidgetItem("success")
+                        status.setForeground(QBrush(QColor(255, 255, 0)))
+                        sow_item.setFlags(sow_item.flags() & ~Qt.ItemIsEnabled)
+
+                        self.ui.tblRemove.item(row, 0).setFlags(sow_item.flags() & ~Qt.ItemIsEnabled)
+                        self.ui.tblRemove.item(row, 2).setFlags(sow_item.flags() & ~Qt.ItemIsEnabled)
+                        self.dbHall.remove(self.query.sowName == sow_item.text())
+                        self.ui.tblRemove.setItem(row, 3, status)
+
+    def change_exit_date(self):
+        current_row = self.ui.tblRemove.currentRow()
+        current_column = self.ui.tblRemove.currentColumn()
+
+        if current_column == 2:
+            date = self.ui.calendarWidget.selectedDate()
+            date = date.toString("dd/MM/yyyy")
+            self.ui.tblRemove.setItem(current_row, current_column, QTableWidgetItem(date))
+
+    def popup_confirmation_delete(self):
+        current_row = self.ui.tblRemove.currentRow()
+        current_column = self.ui.tblRemove.currentColumn()
+
+        if current_column == 4:
+            if self.ui.tblRemove.item(current_row, current_column).text() == "SI":
+                dlg = QMessageBox(self)
+                dlg.setWindowTitle("I have a question!")
+                dlg.setText("Sei sicuro di non voler salvare i dati della scrofa?")
+                dlg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+                dlg.setIcon(QMessageBox.Question)
+                button = dlg.exec_()
+                if button == QMessageBox.Yes:
+                    self.ui.tblRemove.setItem(current_row, current_column, QTableWidgetItem("NO"))
+
+            else:
+                self.ui.tblRemove.setItem(current_row, current_column, QTableWidgetItem("SI"))
+
+    def load_hall_rows_to_remove(self):
+        self.ui.tblRemove.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
+        self.ui.tblRemove.setRowCount(0)
+
+        items = self.ui.tblHall.selectedItems()
+        rows = 0
+        for element in items:
+            if element.column() == 1 and element.text().strip():
+                rows += 1
+        self.ui.tblRemove.setRowCount(rows)
+
+        row_index = 0
+        for element in items:
+            if element.column() == 1 and element.text().strip():
+                sow_name = element.text()
+                hall_data = None
+                try:
+                    hall_data = self.dbHall.get(self.query.sowName == sow_name)
+                except:
+                    pass
+                if hall_data is not None:
+                    self.ui.tblRemove.setItem(row_index, 0, QTableWidgetItem(hall_data.get("boxName")))
+                    self.ui.tblRemove.setItem(row_index, 1, QTableWidgetItem(sow_name))
+                    self.ui.tblRemove.setItem(row_index, 2,
+                                              QTableWidgetItem(QDate.currentDate().toString("dd/MM/yyyy")))
+                    # check_box = QCheckBox()
+                    # check_box.setChecked(True)
+                    self.ui.tblRemove.setItem(row_index, 4, QTableWidgetItem("SI"))
+
+                    self.ui.tblRemove.item(row_index, 0).setFlags(Qt.ItemIsEnabled)
+                    self.ui.tblRemove.item(row_index, 1).setFlags(Qt.ItemIsEnabled)
+                    self.ui.tblRemove.item(row_index, 2).setFlags(Qt.ItemIsEnabled)
+                    self.ui.tblRemove.item(row_index, 4).setFlags(Qt.ItemIsEnabled)
+
+                row_index += 1
 
     def archive_sow(self, exit_date, hall_info):
         if hall_info.get("sowName") is not None and hall_info.get("boxName") is not None and \
-                hall_info.get("entryDate") is not None and hall_info.get("nrCurve") is not None and\
+                hall_info.get("entryDate") is not None and hall_info.get("nrCurve") is not None and \
                 hall_info.get("sowSit") is not None and hall_info.get("curDay") is not None:
 
-
-            tot_consumed, tot_curKG = SWFunctions.calcTotConsumed(self, hall_info)
+            tot_consumed, tot_curKG = SWFunctions.calc_tot_consumed(self, hall_info)
             tot_consumed = round(tot_consumed, 2)
             tot_curKG = round(tot_curKG, 2)
 
@@ -455,7 +558,7 @@ class SWFunctions():
                 pardate = hall.get("parDate")
                 if pardate == 0:
                     pardate = "gestazione"
-                tot_consumed, tot_curKG = SWFunctions.calcTotConsumed(self, hall)
+                tot_consumed, tot_curKG = SWFunctions.calc_tot_consumed(self, hall)
 
                 if self.ui.cboxPigBox.currentIndex() == 0:
                     self.ui.tblSowRecord.setItem(row_index, 0, QTableWidgetItem(hall.get("boxName")))
@@ -536,7 +639,7 @@ class SWFunctions():
                 column_index += 1
             row_index += 1
 
-    def saveSowRecord(self):
+    def save_sow_record(self):
         # today = QDate.currentDate().addDays(-1).toString("dd/MM/yyyy")
         today = QDate.currentDate().toString("dd/MM/yyyy")
         for item in self.dbHall:
@@ -564,7 +667,7 @@ class SWFunctions():
 
                     try:
                         record = self.dbSowRecord.get((self.query.sowName == item.get("sowName")) & (
-                                    self.query.entryDate == item.get("entryDate")) & (self.query.day_recorded == today))
+                                self.query.entryDate == item.get("entryDate")) & (self.query.day_recorded == today))
                         saved_readNowFeedKG = float(record.get("consumedKG"))
                     except:
                         pass
@@ -572,12 +675,12 @@ class SWFunctions():
                     if readNowFeedKG > saved_readNowFeedKG:
                         self.dbSowRecord.update({"consumedKG": str(readNowFeedKG)},
                                                 (self.query.sowName == item.get("sowName")) & (
-                                                            self.query.entryDate == item.get("entryDate")) & (
-                                                            self.query.day_recorded == today))
+                                                        self.query.entryDate == item.get("entryDate")) & (
+                                                        self.query.day_recorded == today))
 
         SWFunctions.loadHall(self)
 
-    def calcTotConsumed(self, hallData):
+    def calc_tot_consumed(self, hallData):
         record = self.dbSowRecord.search(
             (self.query.sowName == hallData.get("sowName")) & (self.query.entryDate == hallData.get("entryDate")))
         tot_consumed = 0.0
@@ -597,7 +700,7 @@ class SWFunctions():
 
         return round(tot_consumed, 2), round((tot_consumed / tot_curKG * 100), 2)
 
-    def calcPerc(self, hallData, curKG, date):
+    def calc_percentage(self, hallData, curKG, date):
         perc = 0
 
         if date == QDate.currentDate():
@@ -617,3 +720,47 @@ class SWFunctions():
             except Exception as e:
                 pass
         return perc
+
+    # add this method to COMFUNCTIONS
+    def reset_single_com(self, box_data):
+        if box_data == None:
+            return False
+        else:
+            sec_done = 0
+            weight_done = 0
+            hall_number = int(box_data.get("hallPos")) - 1
+            box_com = box_data.get("comPos")
+            box_name = box_data.get("boxName")
+            curKG = self.dbHall.get(self.query.boxName == box_name).get("curKGToday")
+
+            numero_pasti = self.dbTime.count(self.query.active == "SI")
+            pasto_attivo = self.activeFeed
+            qty_giornaliera = int(curKG)
+            qty_slot = int((qty_giornaliera / numero_pasti) * pasto_attivo)
+
+            print("Resetting box_com" + str(box_com))
+
+            try:
+                # self.master[hall_number].execute(box_com, cst.WRITE_SINGLE_REGISTER, 0,
+                #                                       output_value=((QDateTime.currentSecsSinceEpoch() >> 16) & 0xFFFF))
+                # t.sleep(0.2)
+                # self.master[hall_number].execute(box_com, cst.WRITE_SINGLE_REGISTER, 1,
+                #                                       output_value=((QDateTime.currentSecsSinceEpoch() & 0xFFFF)))
+                # t.sleep(1)
+                self.master[hall_number].execute(box_com, cst.WRITE_SINGLE_REGISTER, 4, output_value=sec_done)
+                # t.sleep(0.2)
+                self.master[hall_number].execute(box_com, cst.WRITE_SINGLE_REGISTER, 8, output_value=weight_done)
+                # t.sleep(0.2)
+                self.master[hall_number].execute(box_com, cst.WRITE_SINGLE_COIL, 0, output_value=self.activeFeed)
+                # t.sleep(0.2)
+                self.master[hall_number].execute(box_com, cst.WRITE_SINGLE_REGISTER, 7, output_value=qty_slot)
+            except Exception as e:
+                print(e)
+                return False
+
+            return True
+
+
+    def display_hall(self):
+        # print(self.perc_yesterday, self.perc_bf_yesterday, self.tot_consumed, self.tot_perc)
+        pass

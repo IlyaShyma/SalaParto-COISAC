@@ -172,7 +172,7 @@ class COMClass(QThread):
 
                         # self.logger.info(f"Old values:{self.self.dbHall.get(self.self.query.boxName == item.get('boxName'))}")
 
-                        self.logger.info(f"hall:{hall}, id:{boxCom}, name:{item.get('boxName')}, tHi:{tHi}, tLo:{tLo}, secToRun:{secToRun}, secTrig:{secTrig}, secDone:{secDone}, numReq:{numReq}, waterPerc:{waterPerc}, weightTarg:{weightTarg}, readNowFeedKG:{readNowFeedKG}, calVal:{calVal}, cage:{cage}, boot:{boot}, sw:{sw}")
+                        self.logger.info(f"hall:{hall_number+1}, id:{boxCom}, name:{item.get('boxName')}, tHi:{tHi}, tLo:{tLo}, secToRun:{secToRun}, secTrig:{secTrig}, secDone:{secDone}, numReq:{numReq}, waterPerc:{waterPerc}, weightTarg:{weightTarg}, readNowFeedKG:{readNowFeedKG}, calVal:{calVal}, cage:{cage}, boot:{boot}, sw:{sw}")
 
                         if (QDateTime.currentSecsSinceEpoch() - ((tHi << 16) | tLo)) > (5 * 60) or self.reset:  #differenza di orario > 5 minuti
                             sec_done = self.self.dbHall.get(self.self.query.boxName == item.get('boxName'))['readNowFeedSec']
@@ -222,6 +222,19 @@ class COMClass(QThread):
         if self.reset:
         	self.reset = False
         self.logger.info(self.body)
+
+        self.ui.cboxComOff.setCurrentIndex(0)
+        self.ui.cboxComOff.clear()
+        self.ui.cboxComOff.addItem("numero offline:" + str(len(self.offline)))
+        offline_strings = ["error"]
+
+        try:
+            offline_strings = [str(x) for x in self.offline]
+        except:
+            pass
+
+        self.ui.cboxComOff.addItems(offline_strings)
+
         if len(self.offline) > self.max_offline:
             self.sendmail()
 
@@ -289,6 +302,7 @@ class COMClass(QThread):
         self.logger.info(self.body)
         if len(self.offline) > self.max_offline:
             self.sendmail()
+
 
     # def daily_report(self, file_relative_path):
     #     # file_name = "reports/myFile.csv"

@@ -15,20 +15,20 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QDateEdit,
-    QDoubleSpinBox, QFormLayout, QFrame, QGridLayout,
-    QHBoxLayout, QHeaderView, QLabel, QLineEdit,
-    QMainWindow, QProgressBar, QPushButton, QRadioButton,
-    QScrollArea, QSizePolicy, QSpacerItem, QSpinBox,
-    QStackedWidget, QTableWidget, QTableWidgetItem, QTextEdit,
-    QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QApplication, QCalendarWidget, QCheckBox, QComboBox,
+    QDateEdit, QDoubleSpinBox, QFormLayout, QFrame,
+    QGridLayout, QHBoxLayout, QHeaderView, QLabel,
+    QLayout, QLineEdit, QMainWindow, QProgressBar,
+    QPushButton, QRadioButton, QScrollArea, QSizePolicy,
+    QSpacerItem, QSpinBox, QStackedWidget, QTableWidget,
+    QTableWidgetItem, QTextEdit, QVBoxLayout, QWidget)
 import resources_rc
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1456, 728)
+        MainWindow.resize(1456, 735)
         self.stylesheet = QWidget(MainWindow)
         self.stylesheet.setObjectName(u"stylesheet")
         self.stylesheet.setStyleSheet(u"#fr1Top {\n"
@@ -424,6 +424,11 @@ class Ui_MainWindow(object):
         self.verticalLayout_6.setSpacing(10)
         self.verticalLayout_6.setObjectName(u"verticalLayout_6")
         self.verticalLayout_6.setContentsMargins(10, 10, 10, 0)
+        self.widget = QWidget(self.pgHome)
+        self.widget.setObjectName(u"widget")
+
+        self.verticalLayout_6.addWidget(self.widget)
+
         self.frHome = QFrame(self.pgHome)
         self.frHome.setObjectName(u"frHome")
         self.frHome.setFrameShape(QFrame.NoFrame)
@@ -507,92 +512,16 @@ class Ui_MainWindow(object):
 
         self.gridLayout_2.addWidget(self.frame, 0, 3, 1, 1)
 
-        self.spiHall = QSpinBox(self.frHall)
-        self.spiHall.setObjectName(u"spiHall")
-        self.spiHall.setMinimumSize(QSize(137, 50))
-        font = QFont()
-        font.setPointSize(20)
-        self.spiHall.setFont(font)
-        self.spiHall.setStyleSheet(u"")
-        self.spiHall.setMinimum(1)
-        self.spiHall.setMaximum(30)
+        self.cboxComOff = QComboBox(self.frHall)
+        self.cboxComOff.setObjectName(u"cboxComOff")
+        sizePolicy1 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        sizePolicy1.setHorizontalStretch(0)
+        sizePolicy1.setVerticalStretch(0)
+        sizePolicy1.setHeightForWidth(self.cboxComOff.sizePolicy().hasHeightForWidth())
+        self.cboxComOff.setSizePolicy(sizePolicy1)
+        self.cboxComOff.setMinimumSize(QSize(160, 30))
 
-        self.gridLayout_2.addWidget(self.spiHall, 0, 1, 1, 1)
-
-        self.lblHall = QLabel(self.frHall)
-        self.lblHall.setObjectName(u"lblHall")
-        self.lblHall.setMinimumSize(QSize(250, 50))
-
-        self.gridLayout_2.addWidget(self.lblHall, 0, 0, 1, 1)
-
-        self.tblHall = QTableWidget(self.frHall)
-        if (self.tblHall.columnCount() < 14):
-            self.tblHall.setColumnCount(14)
-        __qtablewidgetitem = QTableWidgetItem()
-        __qtablewidgetitem.setTextAlignment(Qt.AlignLeading|Qt.AlignVCenter);
-        self.tblHall.setHorizontalHeaderItem(0, __qtablewidgetitem)
-        __qtablewidgetitem1 = QTableWidgetItem()
-        __qtablewidgetitem1.setTextAlignment(Qt.AlignLeading|Qt.AlignVCenter);
-        self.tblHall.setHorizontalHeaderItem(1, __qtablewidgetitem1)
-        __qtablewidgetitem2 = QTableWidgetItem()
-        __qtablewidgetitem2.setTextAlignment(Qt.AlignLeading|Qt.AlignVCenter);
-        self.tblHall.setHorizontalHeaderItem(2, __qtablewidgetitem2)
-        __qtablewidgetitem3 = QTableWidgetItem()
-        __qtablewidgetitem3.setTextAlignment(Qt.AlignLeading|Qt.AlignVCenter);
-        self.tblHall.setHorizontalHeaderItem(3, __qtablewidgetitem3)
-        __qtablewidgetitem4 = QTableWidgetItem()
-        __qtablewidgetitem4.setTextAlignment(Qt.AlignLeading|Qt.AlignVCenter);
-        self.tblHall.setHorizontalHeaderItem(4, __qtablewidgetitem4)
-        __qtablewidgetitem5 = QTableWidgetItem()
-        __qtablewidgetitem5.setTextAlignment(Qt.AlignLeading|Qt.AlignVCenter);
-        self.tblHall.setHorizontalHeaderItem(5, __qtablewidgetitem5)
-        __qtablewidgetitem6 = QTableWidgetItem()
-        __qtablewidgetitem6.setTextAlignment(Qt.AlignLeading|Qt.AlignVCenter);
-        self.tblHall.setHorizontalHeaderItem(6, __qtablewidgetitem6)
-        __qtablewidgetitem7 = QTableWidgetItem()
-        __qtablewidgetitem7.setTextAlignment(Qt.AlignLeading|Qt.AlignVCenter);
-        self.tblHall.setHorizontalHeaderItem(7, __qtablewidgetitem7)
-        __qtablewidgetitem8 = QTableWidgetItem()
-        __qtablewidgetitem8.setTextAlignment(Qt.AlignLeading|Qt.AlignVCenter);
-        self.tblHall.setHorizontalHeaderItem(8, __qtablewidgetitem8)
-        __qtablewidgetitem9 = QTableWidgetItem()
-        __qtablewidgetitem9.setTextAlignment(Qt.AlignLeading|Qt.AlignVCenter);
-        self.tblHall.setHorizontalHeaderItem(9, __qtablewidgetitem9)
-        __qtablewidgetitem10 = QTableWidgetItem()
-        __qtablewidgetitem10.setTextAlignment(Qt.AlignLeading|Qt.AlignVCenter);
-        self.tblHall.setHorizontalHeaderItem(10, __qtablewidgetitem10)
-        __qtablewidgetitem11 = QTableWidgetItem()
-        __qtablewidgetitem11.setTextAlignment(Qt.AlignLeading|Qt.AlignVCenter);
-        self.tblHall.setHorizontalHeaderItem(11, __qtablewidgetitem11)
-        __qtablewidgetitem12 = QTableWidgetItem()
-        __qtablewidgetitem12.setTextAlignment(Qt.AlignLeading|Qt.AlignVCenter);
-        self.tblHall.setHorizontalHeaderItem(12, __qtablewidgetitem12)
-        __qtablewidgetitem13 = QTableWidgetItem()
-        __qtablewidgetitem13.setTextAlignment(Qt.AlignLeading|Qt.AlignVCenter);
-        self.tblHall.setHorizontalHeaderItem(13, __qtablewidgetitem13)
-        if (self.tblHall.rowCount() < 1):
-            self.tblHall.setRowCount(1)
-        __qtablewidgetitem14 = QTableWidgetItem()
-        self.tblHall.setVerticalHeaderItem(0, __qtablewidgetitem14)
-        __qtablewidgetitem15 = QTableWidgetItem()
-        self.tblHall.setItem(0, 0, __qtablewidgetitem15)
-        __qtablewidgetitem16 = QTableWidgetItem()
-        self.tblHall.setItem(0, 1, __qtablewidgetitem16)
-        __qtablewidgetitem17 = QTableWidgetItem()
-        self.tblHall.setItem(0, 2, __qtablewidgetitem17)
-        __qtablewidgetitem18 = QTableWidgetItem()
-        self.tblHall.setItem(0, 3, __qtablewidgetitem18)
-        __qtablewidgetitem19 = QTableWidgetItem()
-        self.tblHall.setItem(0, 5, __qtablewidgetitem19)
-        __qtablewidgetitem20 = QTableWidgetItem()
-        self.tblHall.setItem(0, 7, __qtablewidgetitem20)
-        self.tblHall.setObjectName(u"tblHall")
-        self.tblHall.setStyleSheet(u"")
-        self.tblHall.setFrameShape(QFrame.NoFrame)
-        self.tblHall.setFrameShadow(QFrame.Plain)
-        self.tblHall.setGridStyle(Qt.SolidLine)
-
-        self.gridLayout_2.addWidget(self.tblHall, 1, 0, 1, 6)
+        self.gridLayout_2.addWidget(self.cboxComOff, 0, 4, 1, 1)
 
         self.frHallExtra = QFrame(self.frHall)
         self.frHallExtra.setObjectName(u"frHallExtra")
@@ -713,9 +642,9 @@ class Ui_MainWindow(object):
         self.spinBox = QSpinBox(self.frHallExtra)
         self.spinBox.setObjectName(u"spinBox")
         self.spinBox.setMaximumSize(QSize(150, 16777215))
-        font1 = QFont()
-        font1.setPointSize(11)
-        self.spinBox.setFont(font1)
+        font = QFont()
+        font.setPointSize(11)
+        self.spinBox.setFont(font)
         self.spinBox.setStyleSheet(u"QSpinBox {\n"
 "	padding-left: 0px;\n"
 "	font-size: 11pt;\n"
@@ -751,7 +680,94 @@ class Ui_MainWindow(object):
         self.verticalLayout_11.addLayout(self.formLayout_4)
 
 
-        self.gridLayout_2.addWidget(self.frHallExtra, 0, 7, 2, 1)
+        self.gridLayout_2.addWidget(self.frHallExtra, 0, 6, 2, 1)
+
+        self.tblHall = QTableWidget(self.frHall)
+        if (self.tblHall.columnCount() < 14):
+            self.tblHall.setColumnCount(14)
+        __qtablewidgetitem = QTableWidgetItem()
+        __qtablewidgetitem.setTextAlignment(Qt.AlignLeading|Qt.AlignVCenter);
+        self.tblHall.setHorizontalHeaderItem(0, __qtablewidgetitem)
+        __qtablewidgetitem1 = QTableWidgetItem()
+        __qtablewidgetitem1.setTextAlignment(Qt.AlignLeading|Qt.AlignVCenter);
+        self.tblHall.setHorizontalHeaderItem(1, __qtablewidgetitem1)
+        __qtablewidgetitem2 = QTableWidgetItem()
+        __qtablewidgetitem2.setTextAlignment(Qt.AlignLeading|Qt.AlignVCenter);
+        self.tblHall.setHorizontalHeaderItem(2, __qtablewidgetitem2)
+        __qtablewidgetitem3 = QTableWidgetItem()
+        __qtablewidgetitem3.setTextAlignment(Qt.AlignLeading|Qt.AlignVCenter);
+        self.tblHall.setHorizontalHeaderItem(3, __qtablewidgetitem3)
+        __qtablewidgetitem4 = QTableWidgetItem()
+        __qtablewidgetitem4.setTextAlignment(Qt.AlignLeading|Qt.AlignVCenter);
+        self.tblHall.setHorizontalHeaderItem(4, __qtablewidgetitem4)
+        __qtablewidgetitem5 = QTableWidgetItem()
+        __qtablewidgetitem5.setTextAlignment(Qt.AlignLeading|Qt.AlignVCenter);
+        self.tblHall.setHorizontalHeaderItem(5, __qtablewidgetitem5)
+        __qtablewidgetitem6 = QTableWidgetItem()
+        __qtablewidgetitem6.setTextAlignment(Qt.AlignLeading|Qt.AlignVCenter);
+        self.tblHall.setHorizontalHeaderItem(6, __qtablewidgetitem6)
+        __qtablewidgetitem7 = QTableWidgetItem()
+        __qtablewidgetitem7.setTextAlignment(Qt.AlignLeading|Qt.AlignVCenter);
+        self.tblHall.setHorizontalHeaderItem(7, __qtablewidgetitem7)
+        __qtablewidgetitem8 = QTableWidgetItem()
+        __qtablewidgetitem8.setTextAlignment(Qt.AlignLeading|Qt.AlignVCenter);
+        self.tblHall.setHorizontalHeaderItem(8, __qtablewidgetitem8)
+        __qtablewidgetitem9 = QTableWidgetItem()
+        __qtablewidgetitem9.setTextAlignment(Qt.AlignLeading|Qt.AlignVCenter);
+        self.tblHall.setHorizontalHeaderItem(9, __qtablewidgetitem9)
+        __qtablewidgetitem10 = QTableWidgetItem()
+        __qtablewidgetitem10.setTextAlignment(Qt.AlignLeading|Qt.AlignVCenter);
+        self.tblHall.setHorizontalHeaderItem(10, __qtablewidgetitem10)
+        __qtablewidgetitem11 = QTableWidgetItem()
+        __qtablewidgetitem11.setTextAlignment(Qt.AlignLeading|Qt.AlignVCenter);
+        self.tblHall.setHorizontalHeaderItem(11, __qtablewidgetitem11)
+        __qtablewidgetitem12 = QTableWidgetItem()
+        __qtablewidgetitem12.setTextAlignment(Qt.AlignLeading|Qt.AlignVCenter);
+        self.tblHall.setHorizontalHeaderItem(12, __qtablewidgetitem12)
+        __qtablewidgetitem13 = QTableWidgetItem()
+        __qtablewidgetitem13.setTextAlignment(Qt.AlignLeading|Qt.AlignVCenter);
+        self.tblHall.setHorizontalHeaderItem(13, __qtablewidgetitem13)
+        if (self.tblHall.rowCount() < 1):
+            self.tblHall.setRowCount(1)
+        __qtablewidgetitem14 = QTableWidgetItem()
+        self.tblHall.setVerticalHeaderItem(0, __qtablewidgetitem14)
+        __qtablewidgetitem15 = QTableWidgetItem()
+        self.tblHall.setItem(0, 0, __qtablewidgetitem15)
+        __qtablewidgetitem16 = QTableWidgetItem()
+        self.tblHall.setItem(0, 1, __qtablewidgetitem16)
+        __qtablewidgetitem17 = QTableWidgetItem()
+        self.tblHall.setItem(0, 2, __qtablewidgetitem17)
+        __qtablewidgetitem18 = QTableWidgetItem()
+        self.tblHall.setItem(0, 3, __qtablewidgetitem18)
+        __qtablewidgetitem19 = QTableWidgetItem()
+        self.tblHall.setItem(0, 5, __qtablewidgetitem19)
+        __qtablewidgetitem20 = QTableWidgetItem()
+        self.tblHall.setItem(0, 7, __qtablewidgetitem20)
+        self.tblHall.setObjectName(u"tblHall")
+        self.tblHall.setStyleSheet(u"")
+        self.tblHall.setFrameShape(QFrame.NoFrame)
+        self.tblHall.setFrameShadow(QFrame.Plain)
+        self.tblHall.setGridStyle(Qt.SolidLine)
+
+        self.gridLayout_2.addWidget(self.tblHall, 1, 0, 1, 5)
+
+        self.lblHall = QLabel(self.frHall)
+        self.lblHall.setObjectName(u"lblHall")
+        self.lblHall.setMinimumSize(QSize(250, 50))
+
+        self.gridLayout_2.addWidget(self.lblHall, 0, 0, 1, 1)
+
+        self.spiHall = QSpinBox(self.frHall)
+        self.spiHall.setObjectName(u"spiHall")
+        self.spiHall.setMinimumSize(QSize(137, 50))
+        font1 = QFont()
+        font1.setPointSize(20)
+        self.spiHall.setFont(font1)
+        self.spiHall.setStyleSheet(u"")
+        self.spiHall.setMinimum(1)
+        self.spiHall.setMaximum(30)
+
+        self.gridLayout_2.addWidget(self.spiHall, 0, 1, 1, 1)
 
 
         self.verticalLayout_5.addWidget(self.frHall)
@@ -847,7 +863,7 @@ class Ui_MainWindow(object):
         self.spiCurve = QSpinBox(self.frCurve)
         self.spiCurve.setObjectName(u"spiCurve")
         self.spiCurve.setMinimumSize(QSize(137, 50))
-        self.spiCurve.setFont(font)
+        self.spiCurve.setFont(font1)
         self.spiCurve.setStyleSheet(u"")
         self.spiCurve.setMinimum(1)
         self.spiCurve.setMaximum(5)
@@ -1365,11 +1381,11 @@ class Ui_MainWindow(object):
 
         self.silosGraph = QWidget(self.frame_2)
         self.silosGraph.setObjectName(u"silosGraph")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Minimum)
-        sizePolicy1.setHorizontalStretch(0)
-        sizePolicy1.setVerticalStretch(0)
-        sizePolicy1.setHeightForWidth(self.silosGraph.sizePolicy().hasHeightForWidth())
-        self.silosGraph.setSizePolicy(sizePolicy1)
+        sizePolicy2 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Minimum)
+        sizePolicy2.setHorizontalStretch(0)
+        sizePolicy2.setVerticalStretch(0)
+        sizePolicy2.setHeightForWidth(self.silosGraph.sizePolicy().hasHeightForWidth())
+        self.silosGraph.setSizePolicy(sizePolicy2)
         self.silosGraph.setMaximumSize(QSize(16777215, 16777215))
         self.silosGraph.setSizeIncrement(QSize(100, 100))
         self.silosGraph.setStyleSheet(u"")
@@ -1565,11 +1581,11 @@ class Ui_MainWindow(object):
 
         self.comHistorySel = QComboBox(self.frHistoryLeft)
         self.comHistorySel.setObjectName(u"comHistorySel")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
-        sizePolicy2.setHorizontalStretch(0)
-        sizePolicy2.setVerticalStretch(0)
-        sizePolicy2.setHeightForWidth(self.comHistorySel.sizePolicy().hasHeightForWidth())
-        self.comHistorySel.setSizePolicy(sizePolicy2)
+        sizePolicy3 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        sizePolicy3.setHorizontalStretch(0)
+        sizePolicy3.setVerticalStretch(0)
+        sizePolicy3.setHeightForWidth(self.comHistorySel.sizePolicy().hasHeightForWidth())
+        self.comHistorySel.setSizePolicy(sizePolicy3)
 
         self.formLayout_2.setWidget(0, QFormLayout.FieldRole, self.comHistorySel)
 
@@ -1592,8 +1608,8 @@ class Ui_MainWindow(object):
 
         self.tableWidget = QTableWidget(self.frHistoryLeft)
         self.tableWidget.setObjectName(u"tableWidget")
-        sizePolicy2.setHeightForWidth(self.tableWidget.sizePolicy().hasHeightForWidth())
-        self.tableWidget.setSizePolicy(sizePolicy2)
+        sizePolicy3.setHeightForWidth(self.tableWidget.sizePolicy().hasHeightForWidth())
+        self.tableWidget.setSizePolicy(sizePolicy3)
         self.tableWidget.setStyleSheet(u"")
         self.tableWidget.setFrameShape(QFrame.NoFrame)
         self.tableWidget.setFrameShadow(QFrame.Plain)
@@ -1918,11 +1934,8 @@ class Ui_MainWindow(object):
 
         self.txtDataSow = QLineEdit(self.frAddSow)
         self.txtDataSow.setObjectName(u"txtDataSow")
-        sizePolicy3 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
-        sizePolicy3.setHorizontalStretch(0)
-        sizePolicy3.setVerticalStretch(0)
-        sizePolicy3.setHeightForWidth(self.txtDataSow.sizePolicy().hasHeightForWidth())
-        self.txtDataSow.setSizePolicy(sizePolicy3)
+        sizePolicy1.setHeightForWidth(self.txtDataSow.sizePolicy().hasHeightForWidth())
+        self.txtDataSow.setSizePolicy(sizePolicy1)
         self.txtDataSow.setMinimumSize(QSize(141, 0))
         self.txtDataSow.setMaximumSize(QSize(141, 16777215))
         font4 = QFont()
@@ -1953,7 +1966,7 @@ class Ui_MainWindow(object):
         self.spiDataHallAdd.setObjectName(u"spiDataHallAdd")
         self.spiDataHallAdd.setMinimumSize(QSize(141, 0))
         self.spiDataHallAdd.setMaximumSize(QSize(141, 16777215))
-        self.spiDataHallAdd.setFont(font)
+        self.spiDataHallAdd.setFont(font1)
 
         self.gridLayout_10.addWidget(self.spiDataHallAdd, 1, 1, 1, 1)
 
@@ -1980,7 +1993,7 @@ class Ui_MainWindow(object):
         self.spiDataBoxAdd.setObjectName(u"spiDataBoxAdd")
         self.spiDataBoxAdd.setMinimumSize(QSize(141, 0))
         self.spiDataBoxAdd.setMaximumSize(QSize(141, 16777215))
-        self.spiDataBoxAdd.setFont(font)
+        self.spiDataBoxAdd.setFont(font1)
         self.spiDataBoxAdd.setMaximum(300)
 
         self.gridLayout_10.addWidget(self.spiDataBoxAdd, 2, 1, 1, 1)
@@ -2409,7 +2422,7 @@ class Ui_MainWindow(object):
         self.cboxPigBox.addItem("")
         self.cboxPigBox.setObjectName(u"cboxPigBox")
         self.cboxPigBox.setMinimumSize(QSize(0, 50))
-        self.cboxPigBox.setFont(font)
+        self.cboxPigBox.setFont(font1)
 
         self.verticalLayout_20.addWidget(self.cboxPigBox)
 
@@ -2428,8 +2441,8 @@ class Ui_MainWindow(object):
         self.gridLayout_19.setObjectName(u"gridLayout_19")
         self.btnSearch = QPushButton(self.frPigLeft)
         self.btnSearch.setObjectName(u"btnSearch")
-        sizePolicy3.setHeightForWidth(self.btnSearch.sizePolicy().hasHeightForWidth())
-        self.btnSearch.setSizePolicy(sizePolicy3)
+        sizePolicy1.setHeightForWidth(self.btnSearch.sizePolicy().hasHeightForWidth())
+        self.btnSearch.setSizePolicy(sizePolicy1)
         self.btnSearch.setMinimumSize(QSize(100, 50))
         palette = QPalette()
         brush = QBrush(QColor(255, 255, 255, 255))
@@ -2464,7 +2477,7 @@ class Ui_MainWindow(object):
         palette.setBrush(QPalette.Disabled, QPalette.PlaceholderText, brush)
 #endif
         self.btnSearch.setPalette(palette)
-        self.btnSearch.setFont(font)
+        self.btnSearch.setFont(font1)
         self.btnSearch.setAutoFillBackground(False)
         self.btnSearch.setStyleSheet(u"background-color: rgb(63, 60, 91); \n"
 "color: white; \n"
@@ -2571,6 +2584,70 @@ class Ui_MainWindow(object):
         self.verticalLayout.addWidget(self.frPig)
 
         self.stackedWidget.addWidget(self.pgPig)
+        self.pgPigRemove = QWidget()
+        self.pgPigRemove.setObjectName(u"pgPigRemove")
+        self.verticalLayout_22 = QVBoxLayout(self.pgPigRemove)
+        self.verticalLayout_22.setObjectName(u"verticalLayout_22")
+        self.frRemove = QFrame(self.pgPigRemove)
+        self.frRemove.setObjectName(u"frRemove")
+        self.verticalLayout_19 = QVBoxLayout(self.frRemove)
+        self.verticalLayout_19.setObjectName(u"verticalLayout_19")
+        self.verticalLayout_23 = QVBoxLayout()
+        self.verticalLayout_23.setSpacing(4)
+        self.verticalLayout_23.setObjectName(u"verticalLayout_23")
+        self.verticalLayout_23.setSizeConstraint(QLayout.SetMinimumSize)
+
+        self.verticalLayout_19.addLayout(self.verticalLayout_23)
+
+        self.horizontalLayout_19 = QHBoxLayout()
+        self.horizontalLayout_19.setObjectName(u"horizontalLayout_19")
+        self.verticalLayout_24 = QVBoxLayout()
+        self.verticalLayout_24.setObjectName(u"verticalLayout_24")
+        self.tblRemove = QTableWidget(self.frRemove)
+        if (self.tblRemove.columnCount() < 5):
+            self.tblRemove.setColumnCount(5)
+        __qtablewidgetitem66 = QTableWidgetItem()
+        self.tblRemove.setHorizontalHeaderItem(0, __qtablewidgetitem66)
+        __qtablewidgetitem67 = QTableWidgetItem()
+        self.tblRemove.setHorizontalHeaderItem(1, __qtablewidgetitem67)
+        __qtablewidgetitem68 = QTableWidgetItem()
+        self.tblRemove.setHorizontalHeaderItem(2, __qtablewidgetitem68)
+        __qtablewidgetitem69 = QTableWidgetItem()
+        self.tblRemove.setHorizontalHeaderItem(3, __qtablewidgetitem69)
+        __qtablewidgetitem70 = QTableWidgetItem()
+        self.tblRemove.setHorizontalHeaderItem(4, __qtablewidgetitem70)
+        self.tblRemove.setObjectName(u"tblRemove")
+        self.tblRemove.setEnabled(True)
+        self.tblRemove.setMinimumSize(QSize(649, 0))
+        self.tblRemove.setInputMethodHints(Qt.ImhDate)
+
+        self.verticalLayout_24.addWidget(self.tblRemove)
+
+        self.btnRemove = QPushButton(self.frRemove)
+        self.btnRemove.setObjectName(u"btnRemove")
+        self.btnRemove.setMinimumSize(QSize(0, 70))
+        self.btnRemove.setFont(font1)
+        self.btnRemove.setStyleSheet(u"background-color: rgb(63, 60, 91); \n"
+"color: white; \n"
+"")
+
+        self.verticalLayout_24.addWidget(self.btnRemove)
+
+
+        self.horizontalLayout_19.addLayout(self.verticalLayout_24)
+
+        self.calendarWidget = QCalendarWidget(self.frRemove)
+        self.calendarWidget.setObjectName(u"calendarWidget")
+
+        self.horizontalLayout_19.addWidget(self.calendarWidget)
+
+
+        self.verticalLayout_19.addLayout(self.horizontalLayout_19)
+
+
+        self.verticalLayout_22.addWidget(self.frRemove)
+
+        self.stackedWidget.addWidget(self.pgPigRemove)
         self.pgSettings = QWidget()
         self.pgSettings.setObjectName(u"pgSettings")
         self.verticalLayout_16 = QVBoxLayout(self.pgSettings)
@@ -2600,13 +2677,13 @@ class Ui_MainWindow(object):
         self.scrollAreaSettingsMain.setWidgetResizable(True)
         self.scrollAreaSettings = QWidget()
         self.scrollAreaSettings.setObjectName(u"scrollAreaSettings")
-        self.scrollAreaSettings.setGeometry(QRect(0, 0, 591, 780))
+        self.scrollAreaSettings.setGeometry(QRect(0, 0, 592, 780))
         self.verticalLayout_18 = QVBoxLayout(self.scrollAreaSettings)
         self.verticalLayout_18.setObjectName(u"verticalLayout_18")
         self.frSettings3 = QFrame(self.scrollAreaSettings)
         self.frSettings3.setObjectName(u"frSettings3")
-        sizePolicy2.setHeightForWidth(self.frSettings3.sizePolicy().hasHeightForWidth())
-        self.frSettings3.setSizePolicy(sizePolicy2)
+        sizePolicy3.setHeightForWidth(self.frSettings3.sizePolicy().hasHeightForWidth())
+        self.frSettings3.setSizePolicy(sizePolicy3)
         self.frSettings3.setMinimumSize(QSize(0, 0))
         self.frSettings3.setStyleSheet(u"font-size: 15pt;")
         self.frSettings3.setFrameShape(QFrame.NoFrame)
@@ -2903,7 +2980,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.stackedWidget.setCurrentIndex(8)
+        self.stackedWidget.setCurrentIndex(1)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
@@ -2935,7 +3012,21 @@ class Ui_MainWindow(object):
         self.chkHallCom.setText("")
         self.chkHallFeed.setText("")
         self.lblHallFeed.setText(QCoreApplication.translate("MainWindow", u"Pasto:", None))
-        self.lblHall.setText(QCoreApplication.translate("MainWindow", u"Numero Sala", None))
+        self.lblHallExtra.setText(QCoreApplication.translate("MainWindow", u"Dati Aggiuntivi", None))
+        self.lblHallSit.setText(QCoreApplication.translate("MainWindow", u"Situazione", None))
+        self.lblHallStat.setText(QCoreApplication.translate("MainWindow", u"Attivo", None))
+        self.lblHallRation.setText(QCoreApplication.translate("MainWindow", u"Razionamento", None))
+        self.lblHallEntry.setText(QCoreApplication.translate("MainWindow", u"Data Entrata", None))
+        self.lblHallBirth.setText(QCoreApplication.translate("MainWindow", u"Data Parto", None))
+        self.lblHallNrBirth.setText(QCoreApplication.translate("MainWindow", u"Suini Nati", None))
+        self.lblHallNrDeath.setText(QCoreApplication.translate("MainWindow", u"Suini Vivi", None))
+        self.label_8.setText(QCoreApplication.translate("MainWindow", u"Gestazione", None))
+        self.label_9.setText(QCoreApplication.translate("MainWindow", u"Si", None))
+        self.label_10.setText(QCoreApplication.translate("MainWindow", u"05/10/2021", None))
+        self.label_11.setText("")
+        self.label_12.setText("")
+        self.label_13.setText("")
+        self.spinBox.setSuffix(QCoreApplication.translate("MainWindow", u"%", None))
         ___qtablewidgetitem = self.tblHall.horizontalHeaderItem(0)
         ___qtablewidgetitem.setText(QCoreApplication.translate("MainWindow", u"Gabbia", None));
         ___qtablewidgetitem1 = self.tblHall.horizontalHeaderItem(1)
@@ -2969,21 +3060,7 @@ class Ui_MainWindow(object):
         self.tblHall.setSortingEnabled(False)
         self.tblHall.setSortingEnabled(__sortingEnabled)
 
-        self.lblHallExtra.setText(QCoreApplication.translate("MainWindow", u"Dati Aggiuntivi", None))
-        self.lblHallSit.setText(QCoreApplication.translate("MainWindow", u"Situazione", None))
-        self.lblHallStat.setText(QCoreApplication.translate("MainWindow", u"Attivo", None))
-        self.lblHallRation.setText(QCoreApplication.translate("MainWindow", u"Razionamento", None))
-        self.lblHallEntry.setText(QCoreApplication.translate("MainWindow", u"Data Entrata", None))
-        self.lblHallBirth.setText(QCoreApplication.translate("MainWindow", u"Data Parto", None))
-        self.lblHallNrBirth.setText(QCoreApplication.translate("MainWindow", u"Suini Nati", None))
-        self.lblHallNrDeath.setText(QCoreApplication.translate("MainWindow", u"Suini Vivi", None))
-        self.label_8.setText(QCoreApplication.translate("MainWindow", u"Gestazione", None))
-        self.label_9.setText(QCoreApplication.translate("MainWindow", u"Si", None))
-        self.label_10.setText(QCoreApplication.translate("MainWindow", u"05/10/2021", None))
-        self.label_11.setText("")
-        self.label_12.setText("")
-        self.label_13.setText("")
-        self.spinBox.setSuffix(QCoreApplication.translate("MainWindow", u"%", None))
+        self.lblHall.setText(QCoreApplication.translate("MainWindow", u"Numero Sala", None))
         self.btnHallRem.setText(QCoreApplication.translate("MainWindow", u"RIMUOVI DA GESTIONE", None))
         self.btnHallAdd.setText(QCoreApplication.translate("MainWindow", u"AGGIUNGI SCROFA", None))
         self.btnHallExp.setText(QCoreApplication.translate("MainWindow", u"ESPORTA DATI", None))
@@ -3197,6 +3274,17 @@ class Ui_MainWindow(object):
         self.cboxCurve.setItemText(0, QCoreApplication.translate("MainWindow", u"Gestazione", None))
         self.cboxCurve.setItemText(1, QCoreApplication.translate("MainWindow", u"Parto", None))
 
+        ___qtablewidgetitem59 = self.tblRemove.horizontalHeaderItem(0)
+        ___qtablewidgetitem59.setText(QCoreApplication.translate("MainWindow", u"Gabbia", None));
+        ___qtablewidgetitem60 = self.tblRemove.horizontalHeaderItem(1)
+        ___qtablewidgetitem60.setText(QCoreApplication.translate("MainWindow", u"Scrofa", None));
+        ___qtablewidgetitem61 = self.tblRemove.horizontalHeaderItem(2)
+        ___qtablewidgetitem61.setText(QCoreApplication.translate("MainWindow", u"Uscita", None));
+        ___qtablewidgetitem62 = self.tblRemove.horizontalHeaderItem(3)
+        ___qtablewidgetitem62.setText(QCoreApplication.translate("MainWindow", u"Stato", None));
+        ___qtablewidgetitem63 = self.tblRemove.horizontalHeaderItem(4)
+        ___qtablewidgetitem63.setText(QCoreApplication.translate("MainWindow", u"Salvare i dati", None));
+        self.btnRemove.setText(QCoreApplication.translate("MainWindow", u"RIMUOVERE", None))
         self.lblSettings.setText(QCoreApplication.translate("MainWindow", u"Impostazione Software", None))
         self.lblSetMaxHall_3.setText(QCoreApplication.translate("MainWindow", u"A Box", None))
         self.spiSetModCur.setSuffix("")
